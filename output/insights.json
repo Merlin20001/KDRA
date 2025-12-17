@@ -1,0 +1,20 @@
+[
+  {
+    "topic": "Efficient LLM Inference",
+    "papers_involved": [
+      "2410.00193v3.pdf",
+      "attention.txt"
+    ],
+    "insight_text": "Paper 2410.00193v3.pdf reports the highest performance metric (81.1).",
+    "category": "Performance"
+  },
+  {
+    "topic": "Efficient LLM Inference",
+    "papers_involved": [
+      "2410.00193v3.pdf",
+      "attention.txt"
+    ],
+    "insight_text": "The most frequently mentioned method is ProposedMethod (count: 1).",
+    "category": "Trend"
+  }
+]

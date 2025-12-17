@@ -1,0 +1,65 @@
+Metadata-Version: 2.4
+Name: kdra
+Version: 0.1.0
+Summary: Knowledge-Driven Research Agent: A modular AI system for academic paper analysis.
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: pypdf>=3.0.0
+Requires-Dist: openai>=1.0.0
+Requires-Dist: pyyaml>=6.0
+Provides-Extra: viz
+Requires-Dist: streamlit; extra == "viz"
+Requires-Dist: pandas; extra == "viz"
+Requires-Dist: graphviz; extra == "viz"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+
+# Knowledge-Driven Research Agent (KDRA)
+
+A modular AI system for topic-driven academic paper analysis, structured information extraction, and comparative reasoning.
+
+## Quickstart
+
+### 1. Installation
+
+Clone the repository and install in editable mode:
+
+```bash
+pip install -e .
+```
+
+To install visualization dependencies:
+
+```bash
+pip install -e ".[viz]"
+```
+
+### 2. Run Demo (Offline Mode)
+
+Run the CLI demo using the dummy heuristic backend (no LLM required):
+
+```bash
+python -m kdra.scripts.demo --topic "Transformer Architecture" --mode dummy
+```
+
+Or use the installed script alias:
+
+```bash
+kdra-demo --topic "Transformer Architecture" --mode dummy
+```
+
+### 3. Visualization
+
+To launch the interactive dashboard:
+
+```bash
+streamlit run kdra/viz/app.py
+```
+
+## Project Structure
+
+- `kdra/core`: Core logic modules (Ingestion, Retrieval, Reasoning, KG, Ontology).
+- `kdra/pipeline`: End-to-end orchestration.
+- `kdra/viz`: Streamlit visualization dashboard.
+- `kdra/scripts`: CLI entry points.

@@ -1,0 +1,560 @@
+{
+  "nodes": [
+    {
+      "id": "2410.00193v3.pdf",
+      "type": "Paper",
+      "properties": {
+        "claims": [
+          "LVLMs can accurately identify and reason about entities in diagrams, whether represented textually or visually.",
+          "LVLMs struggle with identifying and reasoning about relations in synthetic diagrams.",
+          "LVLMs perform significantly better on relation recognition in real diagrams compared to synthetic ones, but this is largely due to reliance on background knowledge.",
+          "Models leverage pre-existing knowledge as a shortcut to answer relation questions, even hallucinating relations when visual evidence is absent or contradictory.",
+          "Impressive performance on diagram reasoning benchmarks is an illusion stemming from confounding factors such as model-internal knowledge rather than genuine diagram understanding."
+        ],
+        "limitations": [
+          "Evaluation does not cover all types of diagrams due to practical constraints.",
+          "Findings may not generalize to every Vision-Language Model or diagram domain.",
+          "Synthetic diagrams lack semantic context and real-world complexity, limiting ecological validity.",
+          "Reliance on multiple-choice question answering may constrain model responses and limit depth of reasoning assessment."
+        ]
+      }
+    },
+    {
+      "id": "method:test_suite_evaluation",
+      "type": "Method",
+      "properties": {
+        "name": "Test suite evaluation"
+      }
+    },
+    {
+      "id": "method:synthetic_diagram_generation",
+      "type": "Method",
+      "properties": {
+        "name": "Synthetic diagram generation"
+      }
+    },
+    {
+      "id": "method:real_diagram_annotation",
+      "type": "Method",
+      "properties": {
+        "name": "Real diagram annotation"
+      }
+    },
+    {
+      "id": "method:knowledge_grounding_analysis",
+      "type": "Method",
+      "properties": {
+        "name": "Knowledge grounding analysis"
+      }
+    },
+    {
+      "id": "method:complexity_based_analysis",
+      "type": "Method",
+      "properties": {
+        "name": "Complexity-based analysis"
+      }
+    },
+    {
+      "id": "dataset:1_001_annotated_real_diagrams_from_krishnamurthy_et_al_2016",
+      "type": "Dataset",
+      "properties": {
+        "name": "1,001 annotated real diagrams from Krishnamurthy et al. (2016)"
+      }
+    },
+    {
+      "id": "dataset:kembhavi_et_al_2016_dataset",
+      "type": "Dataset",
+      "properties": {
+        "name": "Kembhavi et al. (2016) dataset"
+      }
+    },
+    {
+      "id": "concept:diagram_understanding",
+      "type": "Concept",
+      "properties": {
+        "name": "Diagram understanding"
+      }
+    },
+    {
+      "id": "concept:visual_language",
+      "type": "Concept",
+      "properties": {
+        "name": "Visual language"
+      }
+    },
+    {
+      "id": "concept:relation_reasoning",
+      "type": "Concept",
+      "properties": {
+        "name": "Relation reasoning"
+      }
+    },
+    {
+      "id": "concept:background_knowledge",
+      "type": "Concept",
+      "properties": {
+        "name": "Background knowledge"
+      }
+    },
+    {
+      "id": "concept:entity_recognition",
+      "type": "Concept",
+      "properties": {
+        "name": "Entity recognition"
+      }
+    },
+    {
+      "id": "concept:vision_language_models",
+      "type": "Concept",
+      "properties": {
+        "name": "Vision-Language Models"
+      }
+    },
+    {
+      "id": "concept:knowledge_shortcuts",
+      "type": "Concept",
+      "properties": {
+        "name": "Knowledge shortcuts"
+      }
+    },
+    {
+      "id": "concept:synthetic_evaluation",
+      "type": "Concept",
+      "properties": {
+        "name": "Synthetic evaluation"
+      }
+    },
+    {
+      "id": "concept:multi_step_reasoning",
+      "type": "Concept",
+      "properties": {
+        "name": "Multi-step reasoning"
+      }
+    },
+    {
+      "id": "concept:commonsense_reasoning",
+      "type": "Concept",
+      "properties": {
+        "name": "Commonsense reasoning"
+      }
+    },
+    {
+      "id": "2410.00193v3.pdf_metric_0",
+      "type": "Metric",
+      "properties": {
+        "name": "Accuracy",
+        "value": 61.81,
+        "unit": "%",
+        "dataset": "Synthetic Diagrams"
+      }
+    },
+    {
+      "id": "2410.00193v3.pdf_metric_1",
+      "type": "Metric",
+      "properties": {
+        "name": "Accuracy",
+        "value": 81.6,
+        "unit": "%",
+        "dataset": "Real Diagrams"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "method:test_suite_evaluation",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "method:synthetic_diagram_generation",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "method:real_diagram_annotation",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "method:knowledge_grounding_analysis",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "method:complexity_based_analysis",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "dataset:1_001_annotated_real_diagrams_from_krishnamurthy_et_al_2016",
+      "relation": "EVALUATED_ON",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "dataset:kembhavi_et_al_2016_dataset",
+      "relation": "EVALUATED_ON",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:diagram_understanding",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:relation_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:background_knowledge",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:entity_recognition",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:knowledge_shortcuts",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:synthetic_evaluation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:multi_step_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "concept:commonsense_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:diagram_understanding",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:diagram_understanding",
+      "target": "concept:relation_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:background_knowledge",
+      "target": "concept:diagram_understanding",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:diagram_understanding",
+      "target": "concept:entity_recognition",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:diagram_understanding",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:relation_reasoning",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:background_knowledge",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:entity_recognition",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:vision_language_models",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:background_knowledge",
+      "target": "concept:relation_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:entity_recognition",
+      "target": "concept:relation_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:relation_reasoning",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:background_knowledge",
+      "target": "concept:entity_recognition",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:background_knowledge",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:entity_recognition",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:test_suite_evaluation",
+      "target": "concept:diagram_understanding",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:test_suite_evaluation",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:test_suite_evaluation",
+      "target": "concept:relation_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:test_suite_evaluation",
+      "target": "concept:background_knowledge",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:test_suite_evaluation",
+      "target": "concept:entity_recognition",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:test_suite_evaluation",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:synthetic_diagram_generation",
+      "target": "concept:diagram_understanding",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:synthetic_diagram_generation",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:synthetic_diagram_generation",
+      "target": "concept:relation_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:synthetic_diagram_generation",
+      "target": "concept:background_knowledge",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:synthetic_diagram_generation",
+      "target": "concept:entity_recognition",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:synthetic_diagram_generation",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:real_diagram_annotation",
+      "target": "concept:diagram_understanding",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:real_diagram_annotation",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:real_diagram_annotation",
+      "target": "concept:relation_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:real_diagram_annotation",
+      "target": "concept:background_knowledge",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:real_diagram_annotation",
+      "target": "concept:entity_recognition",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:real_diagram_annotation",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:knowledge_grounding_analysis",
+      "target": "concept:diagram_understanding",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:knowledge_grounding_analysis",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:knowledge_grounding_analysis",
+      "target": "concept:relation_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:knowledge_grounding_analysis",
+      "target": "concept:background_knowledge",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:knowledge_grounding_analysis",
+      "target": "concept:entity_recognition",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:knowledge_grounding_analysis",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:complexity_based_analysis",
+      "target": "concept:diagram_understanding",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:complexity_based_analysis",
+      "target": "concept:visual_language",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:complexity_based_analysis",
+      "target": "concept:relation_reasoning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:complexity_based_analysis",
+      "target": "concept:background_knowledge",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:complexity_based_analysis",
+      "target": "concept:entity_recognition",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:complexity_based_analysis",
+      "target": "concept:vision_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "2410.00193v3.pdf_metric_0",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf_metric_0",
+      "target": "dataset:synthetic_diagrams",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf",
+      "target": "2410.00193v3.pdf_metric_1",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2410.00193v3.pdf_metric_1",
+      "target": "dataset:real_diagrams",
+      "relation": "RELATED_TO",
+      "properties": {}
+    }
+  ]
+}

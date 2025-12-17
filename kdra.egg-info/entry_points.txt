@@ -1,0 +1,2 @@
+[console_scripts]
+kdra-demo = kdra.scripts.demo:main

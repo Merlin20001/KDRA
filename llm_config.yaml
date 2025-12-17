@@ -1,0 +1,15 @@
+# LLM Configuration
+# You can configure your LLM provider here.
+# Supported providers: OpenAI, DeepSeek, etc. (any OpenAI-compatible API)
+
+# The API Key for your LLM provider
+api_key: "sk-a946128d10f14fec81500b58561efd8e"
+
+# The Base URL for the API (optional, defaults to OpenAI's standard URL)
+# For DeepSeek, use: https://api.deepseek.com/v1
+# For LocalAI/Ollama, use: http://localhost:8080/v1
+base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+
+# The model name to use
+# Examples: gpt-4o, gpt-3.5-turbo, deepseek-chat
+model_name: "qwen-plus"

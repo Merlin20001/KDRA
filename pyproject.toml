@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kdra"
+version = "0.1.0"
+description = "Knowledge-Driven Research Agent: A modular AI system for academic paper analysis."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pydantic>=2.0.0",
+    "pypdf>=3.0.0",
+    "openai>=1.0.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+viz = [
+    "streamlit",
+    "pandas",
+    "graphviz"
+]
+dev = [
+    "pytest"
+]
+
+[project.scripts]
+kdra-demo = "kdra.scripts.demo:main"
+
+[tool.setuptools.packages.find]
+include = ["kdra*"]
+exclude = ["data*", "output*", "tests*"]
