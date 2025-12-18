@@ -5,6 +5,7 @@ import pandas as pd
 import graphviz
 import sys
 import base64
+from kdra.core.retrieval.external import ExternalRetriever
 
 # Ensure we can import the kdra package
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
@@ -90,11 +91,14 @@ def main():
     results = st.session_state.get('results')
     
     # --- Main Interface ---
+    tab_search, tab_chat, tab_kg, tab_data = st.tabs(["🔍 Paper Search", "💬 Chat & Q&A", "🕸️ Knowledge Graph", "📄 Extracted Data"])
+    
+    with tab_search:
+        render_search(data_dir)
+
     if results:
-        tab1, tab2, tab3 = st.tabs(["💬 Chat & Q&A", "🕸️ Knowledge Graph", "📄 Extracted Data"])
-        
-        # Tab 1: Chat Interface
-        with tab1:
+        # Tab 2: Chat Interface
+        with tab_chat:
             st.subheader("Ask questions about your papers")
             
             # Initialize chat history
@@ -142,16 +146,21 @@ def main():
                     with st.chat_message(message["role"]):
                         st.markdown(message["content"])
 
-        # Tab 2: Knowledge Graph
-        with tab2:
+        # Tab 3: Knowledge Graph
+        with tab_kg:
             render_kg(results)
 
-        # Tab 3: Data View
-        with tab3:
+        # Tab 4: Data View
+        with tab_data:
             render_data(results)
             
     else:
-        st.info("👈 Please select your data directory, choose files, and click 'Process Selected Papers' to begin.")
+        with tab_chat:
+            st.info("👈 Please select your data directory, choose files, and click 'Process Selected Papers' to begin.")
+        with tab_kg:
+            st.info("Process papers to view Knowledge Graph.")
+        with tab_data:
+            st.info("Process papers to view Extracted Data.")
 
 def render_kg(results):
     import shutil
@@ -323,6 +332,58 @@ def render_data(results):
         if selected_paper:
             paper_data = next(p for p in extractions if p["paper_id"] == selected_paper)
             st.json(paper_data)
+
+def render_search(data_dir):
+    st.subheader("Search & Retrieve Papers")
+    st.markdown("Search for papers on **arXiv** and download them directly to your workspace.")
+    
+    # Use a form for better alignment and enter-to-submit functionality
+    with st.form(key="search_form"):
+        col1, col2 = st.columns([0.85, 0.15])
+        with col1:
+            # label_visibility="collapsed" removes the label space, aligning it with the button
+            query = st.text_input("Search Query", placeholder="e.g., 'Large Language Models for Knowledge Graphs'", label_visibility="collapsed")
+        with col2:
+            # use_container_width makes the button fill the column width
+            search_btn = st.form_submit_button("🔍 Search", use_container_width=True)
+        
+    if "search_results" not in st.session_state:
+        st.session_state.search_results = []
+        
+    if search_btn and query:
+        with st.spinner("Searching arXiv..."):
+            retriever = ExternalRetriever()
+            results = retriever.search_arxiv(query, max_results=5)
+            st.session_state.search_results = results
+            if not results:
+                st.warning("No results found.")
+                
+    if st.session_state.search_results:
+        st.divider()
+        st.markdown(f"**Found {len(st.session_state.search_results)} results:**")
+        for i, paper in enumerate(st.session_state.search_results):
+            # Use a container for each result to make it look cleaner
+            with st.container():
+                col_text, col_action = st.columns([0.8, 0.2])
+                with col_text:
+                    st.markdown(f"### [{paper['title']}]({paper['pdf_url']})")
+                    st.caption(f"**Authors:** {', '.join(paper['authors'])} | **Published:** {paper['published']}")
+                    with st.expander("Show Abstract"):
+                        st.write(paper['summary'])
+                
+                with col_action:
+                    st.write("") # Spacer
+                    st.write("") # Spacer
+                    if st.button(f"⬇️ Download", key=f"dl_{i}", use_container_width=True):
+                        try:
+                            with st.spinner("Downloading..."):
+                                retriever = ExternalRetriever()
+                                # Download the PDF
+                                path = retriever.download_pdf(paper['pdf_url'], data_dir)
+                                st.success(f"Saved!")
+                        except Exception as e:
+                            st.error(f"Failed: {e}")
+            st.divider()
 
 if __name__ == "__main__":
     main()
