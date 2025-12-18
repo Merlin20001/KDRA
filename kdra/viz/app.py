@@ -25,6 +25,23 @@ def main():
     mode = st.sidebar.radio("Mode", ["Real (LLM)", "Dummy (Offline)"], index=0)
     use_dummy = (mode == "Dummy (Offline)")
     
+    llm_config = {}
+    if not use_dummy:
+        st.sidebar.subheader("LLM Configuration")
+        with st.sidebar.expander("Configure LLM", expanded=True):
+            api_key = st.text_input("API Key", type="password", help="e.g., sk-...")
+            base_url = st.text_input("Base URL", value="https://api.openai.com/v1", help="e.g., https://api.deepseek.com/v1")
+            model_name = st.text_input("Model Name", value="gpt-4o", help="e.g., gpt-4o, deepseek-chat")
+            
+            if api_key:
+                llm_config = {
+                    "api_key": api_key,
+                    "base_url": base_url,
+                    "model_name": model_name
+                }
+            else:
+                st.warning("Please enter an API Key to use Real Mode.")
+    
     # File Upload
     uploaded_files = st.sidebar.file_uploader("Upload Papers", type=['pdf', 'txt', 'md'], accept_multiple_files=True)
     if uploaded_files:
@@ -63,7 +80,7 @@ def main():
         else:
             with st.spinner(f"Ingesting and Building Knowledge Graph from {len(selected_files)} papers..."):
                 # Initialize pipeline
-                pipeline = KDRAPipeline(output_dir=output_dir, use_dummy=use_dummy)
+                pipeline = KDRAPipeline(output_dir=output_dir, use_dummy=use_dummy, llm_config=llm_config)
                 # Run processing (No topic needed)
                 results = pipeline.process_papers(selected_files)
                 

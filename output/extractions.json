@@ -1,57 +1,55 @@
 [
   {
-    "paper_id": "2410.00193v3.pdf",
+    "paper_id": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
     "methods": [
-      "Test suite evaluation",
-      "Synthetic diagram generation",
-      "Real diagram annotation",
-      "Knowledge grounding analysis",
-      "Complexity-based analysis"
+      "Prompt-based generation",
+      "Retrieval-augmented generation",
+      "Self-instruct methods",
+      "Reinforcement learning with feedback",
+      "Iterative self-refinement",
+      "Zero-shot prompting",
+      "Few-shot prompting",
+      "Knowledge integration"
     ],
     "datasets": [
-      "1,001 annotated real diagrams from Krishnamurthy et al. (2016)",
-      "Kembhavi et al. (2016) dataset"
+      "Code Alpaca",
+      "WizardCoder"
     ],
     "metrics": [
       {
-        "name": "Accuracy",
-        "value": 61.81,
+        "name": "Performance improvement",
+        "value": 14.5,
         "unit": "%",
-        "dataset": "Synthetic Diagrams",
-        "confidence": null
-      },
-      {
-        "name": "Accuracy",
-        "value": 81.6,
-        "unit": "%",
-        "dataset": "Real Diagrams",
+        "dataset": "low-data regimes",
         "confidence": null
       }
     ],
     "claims": [
-      "LVLMs can accurately identify and reason about entities in diagrams, whether represented textually or visually.",
-      "LVLMs struggle with identifying and reasoning about relations in synthetic diagrams.",
-      "LVLMs perform significantly better on relation recognition in real diagrams compared to synthetic ones, but this is largely due to reliance on background knowledge.",
-      "Models leverage pre-existing knowledge as a shortcut to answer relation questions, even hallucinating relations when visual evidence is absent or contradictory.",
-      "Impressive performance on diagram reasoning benchmarks is an illusion stemming from confounding factors such as model-internal knowledge rather than genuine diagram understanding."
+      "LLMs can significantly augment or substitute real-world datasets in data-scarce scenarios",
+      "Synthetic data improves model performance in low-resource tasks by 3\u201326%",
+      "LLM-generated code can be validated for functional correctness through execution",
+      "Synthetic data generation reduces annotation costs and enables data augmentation",
+      "Retrieval-augmented pipelines improve factual accuracy in generated text",
+      "Iterative self-training on synthetic data risks model collapse",
+      "Filtering and weighting synthetic examples improve data quality",
+      "Reinforcement learning with execution feedback enhances code synthesis reliability"
     ],
     "limitations": [
-      "Evaluation does not cover all types of diagrams due to practical constraints.",
-      "Findings may not generalize to every Vision-Language Model or diagram domain.",
-      "Synthetic diagrams lack semantic context and real-world complexity, limiting ecological validity.",
-      "Reliance on multiple-choice question answering may constrain model responses and limit depth of reasoning assessment."
+      "Generated text may contain factual inaccuracies",
+      "Stylistic and distributional realism of synthetic data is often insufficient",
+      "Risk of bias amplification in LLM-generated data",
+      "Potential for model collapse with iterative self-training",
+      "Challenges in maintaining diversity while preserving data fidelity"
     ],
     "concepts": [
-      "Diagram understanding",
-      "Visual language",
-      "Relation reasoning",
-      "Background knowledge",
-      "Entity recognition",
-      "Vision-Language Models",
-      "Knowledge shortcuts",
-      "Synthetic evaluation",
-      "Multi-step reasoning",
-      "Commonsense reasoning"
+      "Synthetic data generation",
+      "Large language models",
+      "Text augmentation",
+      "Code synthesis",
+      "Prompt engineering",
+      "Instruction tuning",
+      "Model collapse",
+      "Data fidelity"
     ],
     "evidence_spans": {}
   }

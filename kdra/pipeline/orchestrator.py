@@ -21,13 +21,14 @@ class KDRAPipeline:
     Connects Ingestion -> Extraction -> KG Construction -> Comparative Reasoning.
     """
     
-    def __init__(self, output_dir: str = "./output", use_dummy: bool = True):
+    def __init__(self, output_dir: str = "./output", use_dummy: bool = True, llm_config: Optional[Dict[str, str]] = None):
         """
         Initialize the pipeline.
         
         Args:
             output_dir: Directory to save results.
             use_dummy: If True, use heuristic-based dummy components instead of LLM.
+            llm_config: Dictionary containing 'api_key', 'base_url', and 'model_name'.
         """
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
@@ -46,7 +47,13 @@ class KDRAPipeline:
             print("Initializing KDRA with Real LLM Engine (OpenAI Compatible)")
             # Try to initialize engine (it will check config file internally)
             try:
-                self.engine = OpenAIEngine()
+                # Use provided config or empty dict
+                config = llm_config or {}
+                self.engine = OpenAIEngine(
+                    api_key=config.get("api_key"),
+                    base_url=config.get("base_url"),
+                    model=config.get("model_name")
+                )
                 # Check if key is valid (simple check)
                 if not self.engine.api_key or self.engine.api_key == "sk-...":
                      print("WARNING: No valid API Key found in llm_config.yaml or environment variables.")
