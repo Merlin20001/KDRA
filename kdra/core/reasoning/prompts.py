@@ -19,7 +19,15 @@ Analyze the following text segments from a research paper and extract the key in
 Text Segments:
 {context}
 
-Extract the following fields and output as a JSON object with these exact keys:
+Candidate Entities (Pre-extracted by lightweight NER model):
+{candidates}
+
+Task Instructions:
+1. Review the Candidate Entities provided above. They serve as high-recall suggestions.
+2. Filter out irrelevant or background entities from the candidates.
+3. Use the contextual text to verify if the paper actually proposes/uses the Method, evaluates on the Dataset, and reports the Metric.
+4. Extract the following fields and output as a JSON object with these exact keys. You may also add entities you found that the NER missed!
+
 {{
   "methods": ["list of short, concise method names (1-3 words)"],
   "datasets": ["list of dataset names"],

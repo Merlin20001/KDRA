@@ -82,7 +82,46 @@ def main():
                 # Initialize pipeline
                 pipeline = KDRAPipeline(output_dir=output_dir, use_dummy=use_dummy, llm_config=llm_config)
                 # Run processing (No topic needed)
-                results = pipeline.process_papers(selected_files)
+                full_results = pipeline.process_papers(selected_files)
+                
+                # --- FILTERING RESULTS FOR CURRENT SESSION ---
+                # The user wants current session UI to only focus on the selected papers, 
+                # hiding the massive background historical graph.
+                selected_paper_ids = [os.path.basename(f) for f in selected_files]
+                # In KDRA, the paper node IDs are directly the paper_ids (basenames), without a "Paper:" prefix.
+                selected_paper_node_ids = set(selected_paper_ids)
+                
+                filtered_extractions = [e for e in full_results.get("extractions", []) if e.get("paper_id") in selected_paper_ids]
+                
+                all_nodes = full_results.get("knowledge_graph", {}).get("nodes", [])
+                all_edges = full_results.get("knowledge_graph", {}).get("edges", [])
+                
+                filtered_edges = []
+                # Always start with selected paper nodes in case they have no edges
+                connected_node_ids = set()
+                
+                for edge in all_edges:
+                    # Keep edges that are directly connected to our selected papers
+                    if edge.get("source") in selected_paper_node_ids or edge.get("target") in selected_paper_node_ids:
+                        filtered_edges.append(edge)
+                        connected_node_ids.add(edge.get("source"))
+                        connected_node_ids.add(edge.get("target"))
+                
+                # In case some papers had no connections, ensure they are still included
+                for pid in selected_paper_node_ids:
+                    connected_node_ids.add(pid)
+                    
+                filtered_nodes = [n for n in all_nodes if n.get("id") in connected_node_ids]
+                
+                results = {
+                    "extractions": filtered_extractions,
+                    "errors": full_results.get("errors", []),
+                    "knowledge_graph": {
+                        "nodes": filtered_nodes,
+                        "edges": filtered_edges
+                    }
+                }
+                # ---------------------------------------------
                 
                 if results.get("errors"):
                     for err in results["errors"]:
@@ -108,8 +147,14 @@ def main():
     results = st.session_state.get('results')
     
     # --- Main Interface ---
-    tab_search, tab_chat, tab_kg, tab_data = st.tabs(["🔍 Paper Search", "💬 Chat & Q&A", "🕸️ Knowledge Graph", "📄 Extracted Data"])
-    
+    tab_search, tab_chat, tab_kg, tab_data, tab_discover = st.tabs([
+        "🔍 Paper Search", 
+        "💬 Chat & Q&A", 
+        "🕸️ Knowledge Graph", 
+        "📄 Extracted Data",
+        "💡 Discover & Recommend"
+    ])
+
     with tab_search:
         render_search(data_dir)
 
@@ -170,6 +215,10 @@ def main():
         # Tab 4: Data View
         with tab_data:
             render_data(results)
+
+        # Tab 5: Discover & Recommend
+        with tab_discover:
+            render_discover(results)
             
     else:
         with tab_chat:
@@ -178,19 +227,23 @@ def main():
             st.info("Process papers to view Knowledge Graph.")
         with tab_data:
             st.info("Process papers to view Extracted Data.")
+        with tab_discover:
+            st.info("Process papers to unlock Discovery & Recommendations.")
 
 def render_kg(results):
-    import shutil
-    if not shutil.which("dot"):
-        st.error("Graphviz executable 'dot' not found. Please install Graphviz (e.g., `conda install graphviz` or `brew install graphviz`).")
+    import streamlit.components.v1 as components
+    try:
+        from pyvis.network import Network
+    except ImportError:
+        st.error("Pyvis is not installed. Please run `pip install pyvis`.")
         return
 
-    st.subheader("Knowledge Graph Visualization")
+    st.subheader("Interactive Knowledge Graph Visualization")
     kg = results.get("knowledge_graph", {})
     nodes = kg.get("nodes", [])
     edges = kg.get("edges", [])
     
-    st.info(f"Debug Info: Found {len(nodes)} nodes and {len(edges)} edges to render.")
+    st.info(f"Generated Interactive Graph with {len(nodes)} nodes and {len(edges)} edges.")
     
     # --- Filter Controls ---
     st.markdown("**Filter Nodes:**")
@@ -208,119 +261,97 @@ def render_kg(results):
     if show_dataset: allowed_types.append("Dataset")
     if show_metric: allowed_types.append("Metric")
 
-    if nodes:
-        try:
-            graph = graphviz.Digraph()
-            graph.attr(rankdir='LR')
-            # Global node attributes for cleaner look
-            graph.attr('node', shape='box', style='rounded,filled', fontname='Helvetica', fontsize='10')
-            
-            # Helper to sanitize IDs for Graphviz (replace colons and dots to avoid syntax errors)
-            def clean_id(id_str):
-                # Replace : . - and space with _ to ensure valid DOT identifiers
-                return id_str.replace(":", "__").replace(".", "_").replace("-", "_").replace(" ", "_")
+    if not nodes:
+        st.warning("Knowledge graph is empty.")
+        return
 
-            # 1. Identify visible nodes
-            visible_node_ids = set()
-            found_types = set()
-            for node in nodes:
-                # Handle NodeType enum or string
-                raw_type = str(node["type"])
-                # Normalize: remove NodeType. prefix, and ensure Title Case (Paper, Method, etc.)
-                clean_type = raw_type.replace("NodeType.", "")
-                # Handle uppercase cases (PAPER -> Paper) if necessary
-                if clean_type.isupper():
-                    clean_type = clean_type.title()
-                
-                found_types.add(clean_type)
-                
-                if clean_type in allowed_types:
-                    visible_node_ids.add(node["id"])
-            
-            # Debug: Show found types if nothing is visible
-            if not visible_node_ids and nodes:
-                st.warning(f"No nodes visible. Found node types: {found_types}. Allowed: {allowed_types}")
+    # 1. Identify visible nodes
+    visible_node_ids = set()
+    found_types = set()
+    for node in nodes:
+        raw_type = str(node.get("type", ""))
+        clean_type = raw_type.replace("NodeType.", "").title()
+        found_types.add(clean_type)
+        if clean_type in allowed_types:
+            visible_node_ids.add(node["id"])
+    
+    if not visible_node_ids:
+        st.warning(f"No nodes match the current filters. Available types: {found_types}")
+        return
 
-            # 2. Add Nodes
-            for node in nodes:
-                if node["id"] not in visible_node_ids:
-                    continue
+    # 2. Build Pyvis Network
+    # Initialize PyVis with larger height for better local viewing
+    net = Network(height="800px", width="100%", bgcolor="#ffffff", font_color="black", directed=True)
+    
+    # Add physics for better layout and to avoid overlap
+    net.barnes_hut(gravity=-3000, central_gravity=0.3, spring_length=200)
+    
+    # Add Nodes
+    for node in nodes:
+        if node["id"] not in visible_node_ids:
+            continue
 
-                raw_type = str(node["type"])
-                node_type = raw_type.replace("NodeType.", "")
-                if node_type.isupper(): node_type = node_type.title()
+        raw_type = str(node.get("type", ""))
+        node_type = raw_type.replace("NodeType.", "").title()
 
-                color = "lightgrey"
-                if node_type == "Paper": color = "#ADD8E6"      # Light Blue
-                elif node_type == "Method": color = "#90EE90"   # Light Green
-                elif node_type == "Dataset": color = "#FFB347"  # Pastel Orange
-                elif node_type == "Metric": color = "#FFB6C1"   # Light Pink
-                elif node_type == "Concept": color = "#FFFFE0"  # Light Yellow
-                
-                safe_id = clean_id(node["id"])
-                
-                # Use name from properties if available, else ID suffix
-                raw_label = node.get("properties", {}).get("name", node["id"].split(':')[-1])
-                
-                # Truncate label for cleaner graph
-                if len(raw_label) > 20:
-                    display_label = raw_label[:17] + "..."
-                else:
-                    display_label = raw_label
-                
-                # Tooltip shows full name and type
-                tooltip = f"{node_type}: {raw_label}"
-                
-                graph.node(safe_id, label=display_label, fillcolor=color, tooltip=tooltip)
-            
-            # 3. Add Edges
-            for edge in edges:
-                if edge["source"] in visible_node_ids and edge["target"] in visible_node_ids:
-                    # Clean relation label
-                    rel_label = str(edge["relation"]).replace("RelationType.", "").replace("EdgeType.", "")
-                    # Simplify relation labels
-                    if rel_label == "MENTIONS": rel_label = "" # Too common, hide it
-                    
-                    graph.edge(clean_id(edge["source"]), clean_id(edge["target"]), label=rel_label, fontsize="8", color="gray50")
-            
-            # --- Rendering ---
-            
-            # 1. Generate SVG for high-res viewing
-            try:
-                svg_data = graph.pipe(format='svg')
-                b64_svg = base64.b64encode(svg_data).decode('utf-8')
-                
-                # Link to open SVG in new tab
-                href = f'<a href="data:image/svg+xml;base64,{b64_svg}" target="_blank" style="text-decoration:none;">' \
-                       f'<button style="background-color:#FF4B4B; color:white; padding:8px 16px; border:none; border-radius:4px; cursor:pointer; margin-bottom:10px;">' \
-                       f'🔍 Click to Open Zoomable Graph (New Tab)</button></a>'
-                st.markdown(href, unsafe_allow_html=True)
-                
-                # Download button
-                st.download_button(
-                    label="⬇️ Download Graph (SVG)",
-                    data=svg_data,
-                    file_name="knowledge_graph.svg",
-                    mime="image/svg+xml"
-                )
-                
-            except Exception as e:
-                st.warning(f"Could not generate SVG for download: {e}")
+        color = "#D3D3D3" # Lightgrey default
+        if node_type == "Paper": color = "#ADD8E6"
+        elif node_type == "Method": color = "#90EE90"
+        elif node_type == "Dataset": color = "#FFB347"
+        elif node_type == "Metric": color = "#FFB6C1"
+        elif node_type == "Concept": color = "#FFFFE0"
+        
+        raw_label = node.get("properties", {}).get("name", node["id"].split(':')[-1])
+        # truncate label
+        display_label = raw_label[:20] + "..." if len(raw_label) > 20 else raw_label
+        
+        net.add_node(
+            node["id"], 
+            label=display_label, 
+            title=f"{node_type}: {raw_label}", # Tooltip on hover
+            color=color,
+            shape="box" if node_type == "Paper" else "ellipse"
+        )
 
-            # 2. Render Interactive Chart in App
-            st.graphviz_chart(graph, use_container_width=True)
+    # Add Edges
+    for edge in edges:
+        if edge["source"] in visible_node_ids and edge["target"] in visible_node_ids:
+            rel_label = str(edge.get("relation", "")).replace("RelationType.", "").replace("EdgeType.", "")
+            if rel_label == "MENTIONS": rel_label = ""
             
-            # Debug: Show source
-            with st.expander("View Graphviz DOT Source"):
-                st.code(graph.source)
-            
-        except Exception as e:
-            st.error(f"Error rendering graph: {e}")
-            # Check if it's a path issue
-            import os
-            st.text(f"PATH: {os.environ.get('PATH')}")
-    else:
-        st.write("Empty Knowledge Graph.")
+            net.add_edge(
+                edge["source"], 
+                edge["target"], 
+                title=rel_label, 
+                label=rel_label if rel_label else None, 
+                arrows={'to': {'enabled': True, 'scaleFactor': 0.5}}
+            )
+
+    # 3. Generate and Render HTML
+    html_file = "kg_visualization.html"
+    try:
+        net.save_graph(html_file)
+        
+        # Read the generated HTML file to embed it
+        with open(html_file, "r", encoding="utf-8") as f:
+            source_code = f.read()
+        
+        # Modern browsers block opening `data:text/html` in new tabs for security reasons.
+        # So we provide a proper download button instead.
+        st.download_button(
+            label="📺 Download Interactive HTML for Fullscreen Viewing",
+            data=source_code,
+            file_name="fullscreen_graph.html",
+            mime="text/html",
+            help="Download and double-click to open in any browser for an immersive, 100% full-screen view without UI constraints.",
+            use_container_width=True
+        )
+        
+        # Render in Streamlit with significantly increased height mask
+        components.html(source_code, height=820, scrolling=True)
+        
+    except Exception as e:
+        st.error(f"Failed to render interactive graph: {e}")
 
 def render_data(results):
     st.subheader("Extracted Structured Data")
@@ -401,6 +432,95 @@ def render_search(data_dir):
                         except Exception as e:
                             st.error(f"Failed: {e}")
             st.divider()
+
+def render_discover(results):
+    st.subheader("💡 Discovery & Recommendation Engine")
+    st.markdown("Based on the generated Knowledge Graph, discover related methodologies and datasets logically connected to your topics of interest.")
+    
+    kg = results.get("knowledge_graph", {})
+    nodes = kg.get("nodes", [])
+    edges = kg.get("edges", [])
+    
+    if not nodes:
+        st.warning("Knowledge graph is empty.")
+        return
+        
+    # Get all concepts
+    concepts = [n["properties"].get("name", n["id"]) for n in nodes if n["type"] == "Concept"]
+    # Fallback if no Concepts
+    if not concepts:
+        concepts = [n["properties"].get("name", n["id"]) for n in nodes if n["type"] != "Paper"]
+        
+    if not concepts:
+        st.info("Not enough conceptual data to provide recommendations.")
+        return
+        
+    selected_concept = st.selectbox("Select a Research Concept or Topic:", sorted(list(set(concepts))))
+    
+    if selected_concept:
+        st.divider()
+        
+        # 1. Find target Node ID(s) based on selection
+        target_ids = [n["id"] for n in nodes if n["properties"].get("name") == selected_concept or n["id"] == selected_concept]
+                
+        # 2. Find papers related to this concept
+        related_papers = set()
+        for e in edges:
+            if e["target"] in target_ids and "RELATED_TO" in e["relation"]:
+                related_papers.add(e["source"])
+            elif e["source"] in target_ids and "RELATED_TO" in e["relation"]:
+                related_papers.add(e["target"])
+                
+        # Handle nodes connecting implicitly to paper
+        for e in edges:
+            if e["target"] in target_ids or e["source"] in target_ids:
+                other = e["source"] if e["target"] in target_ids else e["target"]
+                for n in nodes:
+                    if n["id"] == other and n["type"] == "Paper":
+                        related_papers.add(other)
+
+        # 3. Aggregate methodologies and datasets
+        recommended_methods = {}
+        recommended_datasets = {}
+        
+        for e in edges:
+            if e["source"] in related_papers:
+                t_id = e["target"]
+                t_node = next((n for n in nodes if n["id"] == t_id), None)
+                if t_node:
+                    name = t_node["properties"].get("name", t_id)
+                    if t_node["type"] == "Method" or e["relation"] == "USES":
+                        recommended_methods[name] = recommended_methods.get(name, 0) + 1
+                    elif t_node["type"] == "Dataset" or e["relation"] == "EVALUATED_ON":
+                        recommended_datasets[name] = recommended_datasets.get(name, 0) + 1
+
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown(f"### 🛠️ Recommended Methods")
+            if recommended_methods:
+                sorted_methods = sorted(recommended_methods.items(), key=lambda x: x[1], reverse=True)
+                for method, count in sorted_methods:
+                    st.success(f"**{method}** (Found in {count} related paper(s))")
+            else:
+                st.info("No related methods found in the graph for this concept.")
+                
+        with col2:
+            st.markdown(f"### 🗄️ Recommended Datasets")
+            if recommended_datasets:
+                sorted_datasets = sorted(recommended_datasets.items(), key=lambda x: x[1], reverse=True)
+                for dataset, count in sorted_datasets:
+                    st.info(f"**{dataset}** (Found in {count} related paper(s))")
+            else:
+                st.info("No related datasets found in the graph for this concept.")
+                
+        st.divider()
+        st.markdown("### 📄 Contextual Source Papers")
+        if related_papers:
+            for p in related_papers:
+                st.markdown(f"- `{p}`")
+        else:
+            st.info("No direct papers found for this concept.")
 
 if __name__ == "__main__":
     main()

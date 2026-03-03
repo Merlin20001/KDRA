@@ -30,6 +30,84 @@ class PaperIngestor:
         """
         return self.chunker.chunk(text, metadata)
 
+    def _parse_pdf(self, file_path: str) -> str:
+        """
+        Parses PDF files using a tiered fallback strategy for formatting and modality retention:
+        Tier 1: Deep Learning Vision Models (MinerU / Marker)
+        Tier 2: Advanced text+layout extractors (pymupdf4llm)
+        Tier 3: Naive extraction (pypdf)
+        """
+        import logging
+        text = ""
+
+        # Tier 1 Attempt: MinerU (magic-pdf)
+        try:
+            logging.info(f"Attempting MinerU (magic-pdf) for Vision-based deep extraction: {file_path}")
+            from magic_pdf.pipe.UNIPipe import UNIPipe
+            from magic_pdf.rw.DiskReaderWriter import DiskReaderWriter
+            import magic_pdf.model as model_config
+
+            # Initialize model configuration for MinerU
+            model_config.__use_inside_model__ = True
+            pipe = UNIPipe(file_path, {"_ddXz": "ddXz"}, DiskReaderWriter(os.path.dirname(file_path)))
+            pipe.pipe_classify()
+            pipe.pipe_parse()
+            md_content = pipe.pipe_mk_markdown()
+            if md_content:
+                logging.info("MinerU extraction successful.")
+                return md_content
+        except ImportError:
+            pass
+        except Exception as e:
+            logging.warning(f"MinerU extraction failed: {e}")
+
+        # Alternate Tier 1 Attempt: Marker
+        try:
+            logging.info(f"Attempting Marker for local Deep Learning extraction: {file_path}")
+            from marker.converters.pdf import PdfConverter
+            from marker.models import create_model_dict
+            from marker.output import text_from_rendered
+            
+            converter = PdfConverter(artifact_dict=create_model_dict())
+            rendered = converter(file_path)
+            md_text, _, _ = text_from_rendered(rendered)
+            
+            if md_text:
+                logging.info("Marker extraction successful.")
+                return md_text
+        except ImportError:
+            pass
+        except Exception as e:
+            logging.warning(f"Marker extraction failed: {e}")
+
+        # Tier 2 Attempt: pymupdf4llm (Lighter Markdown extractor)
+        try:
+            logging.info("Advanced vision extractors not available. Falling back to pymupdf4llm (Markdown preserving)...")
+            import pymupdf4llm
+            text = pymupdf4llm.to_markdown(file_path)
+            logging.info("pymupdf4llm extraction successful.")
+            return text
+        except ImportError:
+            logging.warning("pymupdf4llm not installed (`pip install pymupdf4llm`).")
+        except Exception as e:
+            logging.warning(f"pymupdf4llm extraction failed: {e}")
+
+        # Tier 3 Fatal Fallback: Naive pypdf (Destroys tables/equations)
+        try:
+            logging.warning("Falling back to naive pypdf. Tables and formulas will likely be mangled.")
+            from pypdf import PdfReader
+            reader = PdfReader(file_path)
+            for page in reader.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+        except ImportError:
+            raise ImportError("pypdf is required for PDF support. Install it with `pip install pypdf`.")
+        except Exception as e:
+            raise RuntimeError(f"Failed to read PDF file {file_path}: {e}")
+
+        return text
+
     def ingest_file(self, file_path: str, metadata: Optional[PaperMetadata] = None) -> List[PaperChunk]:
         """
         Ingest a paper from a file path.
@@ -51,15 +129,7 @@ class PaperIngestor:
             with open(file_path, 'r', encoding='utf-8') as f:
                 text = f.read()
         elif file_path.endswith('.pdf'):
-            try:
-                from pypdf import PdfReader
-                reader = PdfReader(file_path)
-                for page in reader.pages:
-                    text += page.extract_text() + "\n"
-            except ImportError:
-                raise ImportError("pypdf is required for PDF support. Install it with `pip install pypdf`.")
-            except Exception as e:
-                raise RuntimeError(f"Failed to read PDF file {file_path}: {e}")
+            text = self._parse_pdf(file_path)
         else:
             # Placeholder for binary formats
             raise NotImplementedError(f"File format not supported yet: {file_path}")

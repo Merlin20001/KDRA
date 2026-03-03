@@ -1,89 +1,102 @@
-from typing import Dict, Optional, List
+import re
+import logging
+from typing import Dict, Optional
 
-class ConceptNormalizer:
+try:
+    from sentence_transformers import SentenceTransformer, util
+    ST_AVAILABLE = True
+except ImportError:
+    ST_AVAILABLE = False
+
+class VectorOntologyNormalizer:
     """
-    Handles normalization of concepts and alignment with an ontology.
-    Maintains a registry of synonyms and mappings to external ontology IDs.
+    Normalizes entity IDs using vector embeddings to merge semantically similar concepts.
+    For example, "Transformer" and "Transform architecture" will be mapped to the same ID.
     """
     
-    def __init__(self):
-        # Map of alias/synonym (lowercase) -> canonical concept name
-        self._synonym_map: Dict[str, str] = {}
-        # Map of canonical name -> external ontology ID
-        self._ontology_ids: Dict[str, str] = {}
+    def __init__(self, model_name: str = 'BAAI/bge-small-en-v1.5', threshold: float = 0.88):
+        self.threshold = threshold
+        self.entity_memory: Dict[str, object] = {} # { "entity_id": embedding_tensor }
+        self.entity_names: Dict[str, str] = {}     # { "entity_id": "Original Name" }
         
-        # Pre-populate with some common AI research terms for demonstration
-        self._seed_knowledge()
-
-    def _seed_knowledge(self):
-        """Add some initial synonyms and IDs."""
-        # Synonyms
-        self.register_synonym("large language model", "LLM")
-        self.register_synonym("gpt-3", "GPT-3")
-        self.register_synonym("gpt-4", "GPT-4")
-        self.register_synonym("convolutional neural network", "CNN")
-        self.register_synonym("transformer network", "Transformer")
-        self.register_synonym("chain-of-thought", "CoT")
-        
-        # Ontology IDs (Mock IDs based on Computer Science Ontology or similar)
-        self.register_concept("LLM", "CSO:12345")
-        self.register_concept("CNN", "CSO:67890")
-        self.register_concept("Transformer", "CSO:54321")
-        self.register_concept("CoT", "CSO:99887")
-
-    def normalize(self, term: str) -> str:
-        """
-        Normalize a term to its canonical form.
-        
-        Args:
-            term: The raw term string.
+        if ST_AVAILABLE:
+            logging.info(f"Loading Vector Ontology Model: {model_name}... (First time may take a moment)")
+            self.model = SentenceTransformer(model_name)
+        else:
+            self.model = None
+            logging.warning("sentence-transformers not installed. Falling back to basic string normalization for Ontology.")
             
-        Returns:
-            The canonical term if found, otherwise the original term (cleaned).
+    def normalize_and_dedupe(self, node_type_value: str, name: str) -> str:
         """
-        if not term:
-            return ""
+        Takes an entity name and its type, returns a unified ID.
+        If a similar entity already exists, returns the existing ID to merge them.
+        Otherwise, registers a new one.
+        """
+        # 1. Base clean name
+        clean_name = self._basic_clean(name)
+        
+        # 2. If vector model is not available, just use basic ID
+        if not self.model:
+            return f"{node_type_value.lower()}:{clean_name}"
             
-        clean_term = term.strip()
-        lower_term = clean_term.lower()
+        # 3. Vector-based Deduplication
+        new_emb = self.model.encode(name, convert_to_tensor=True)
         
-        # Check direct match in synonym map
-        if lower_term in self._synonym_map:
-            return self._synonym_map[lower_term]
+        best_match_id = None
+        highest_score = 0.0
+        
+        # Compare against existing entities of the SAME type
+        type_prefix = f"{node_type_value.lower()}:"
+        
+        for e_id, e_emb in self.entity_memory.items():
+            if e_id.startswith(type_prefix):
+                # Calculate cosine similarity
+                score = util.cos_sim(new_emb, e_emb).item()
+                if score > highest_score:
+                    highest_score = score
+                    best_match_id = e_id
+                    
+        if highest_score >= self.threshold and best_match_id:
+            # Match found
+            return best_match_id
+        else:
+            # Create a new canonical ID
+            new_id = f"{type_prefix}{clean_name}"
             
-        # Return original with standard casing if no mapping found
-        # (In a real system, we might use fuzzy matching or stemming here)
-        return clean_term
+            # Handle potential exact hash collisions from clean_name but different semantics
+            counter = 1
+            original_new_id = new_id
+            while new_id in self.entity_memory:
+                new_id = f"{original_new_id}_{counter}"
+                counter += 1
+                
+            self.entity_memory[new_id] = new_emb
+            self.entity_names[new_id] = name
+            return new_id
 
-    def get_id(self, term: str) -> Optional[str]:
+    def _basic_clean(self, name: str) -> str:
+        """Fallback basic string cleaning."""
+        clean_name = name.strip().lower()
+        clean_name = re.sub(r'[^a-z0-9]', '_', clean_name)
+        clean_name = re.sub(r'_+', '_', clean_name)
+        return clean_name.strip('_')
+
+    def sync_from_graph(self, knowledge_graph) -> None:
         """
-        Get the external ontology ID for a term.
-        
-        Args:
-            term: The term to look up (will be normalized first).
+        Seed the normalizer's memory from an existing knowledge graph
+        to ensure incremental runs keep deduplicating text properly.
+        """
+        if not self.model or not knowledge_graph:
+            return
             
-        Returns:
-            The ontology ID string if found, else None.
-        """
-        canonical = self.normalize(term)
-        return self._ontology_ids.get(canonical)
+        for node in knowledge_graph.nodes:
+            # Re-seed memory using the canonical node ID and its original name property
+            node_id = node.id
+            name = node.properties.get("name", node.id.split(":", 1)[-1])
+            
+            if node_id not in self.entity_memory:
+                emb = self.model.encode(name, convert_to_tensor=True)
+                self.entity_memory[node_id] = emb
+                self.entity_names[node_id] = name
+                logging.info(f"Seeded normalizer memory: {node_id} -> {name}")
 
-    def register_synonym(self, alias: str, canonical: str):
-        """
-        Register a new synonym.
-        
-        Args:
-            alias: The alternative name (e.g., "Large Language Model").
-            canonical: The standard name (e.g., "LLM").
-        """
-        self._synonym_map[alias.lower()] = canonical
-
-    def register_concept(self, canonical: str, ontology_id: str):
-        """
-        Register a concept with an ID.
-        
-        Args:
-            canonical: The standard name.
-            ontology_id: The external ID.
-        """
-        self._ontology_ids[canonical] = ontology_id

@@ -1,25 +1,404 @@
 {
   "nodes": [
     {
+      "id": "2306.05212v1.pdf",
+      "type": "Paper",
+      "properties": {
+        "claims": [
+          "RETA-LLM reduces hallucination in LLMs by grounding generation in retrieved external knowledge.",
+          "RETA-LLM enables answering in-domain questions inaccessible to vanilla LLMs trained on public data.",
+          "The disentangled design separates IR systems and LLMs, enabling independent customization of search engines and language models.",
+          "LLMs are used not only for answer generation but also for request rewriting, passage extraction, and fact checking.",
+          "RETA-LLM provides a complete, ready-to-use pipeline for building domain-specific retrieval-augmented LLM systems from scratch.",
+          "RETA-LLM is part of YuLan, an open-source LLM initiative by Gaoling School of Artificial Intelligence, Renmin University of China."
+        ],
+        "limitations": [
+          "RETA-LLM is still under development with unresolved issues.",
+          "Input length constraints of LLMs necessitate heuristic passage extraction (e.g., sliding window), risking information loss.",
+          "Reliance on LLMs for fact checking inherits their inherent unreliability — no external verification oracle is employed.",
+          "Default configuration uses a dense retriever without benchmarking against sparse or hybrid alternatives.",
+          "No evaluation metrics (e.g., accuracy, faithfulness, retrieval recall) are reported in the provided text.",
+          "The toolkit’s effectiveness is not empirically validated in the paper — no experiments, baselines, or ablation studies are presented."
+        ]
+      }
+    },
+    {
+      "id": "method:request_rewriting",
+      "type": "Method",
+      "properties": {
+        "name": "Request Rewriting"
+      }
+    },
+    {
+      "id": "method:document_retrieval",
+      "type": "Method",
+      "properties": {
+        "name": "Document Retrieval"
+      }
+    },
+    {
+      "id": "method:passage_extraction",
+      "type": "Method",
+      "properties": {
+        "name": "Passage Extraction"
+      }
+    },
+    {
+      "id": "method:answer_generation",
+      "type": "Method",
+      "properties": {
+        "name": "Answer Generation"
+      }
+    },
+    {
+      "id": "method:fact_checking",
+      "type": "Method",
+      "properties": {
+        "name": "Fact Checking"
+      }
+    },
+    {
+      "id": "method:retrieval_augmented_llm",
+      "type": "Method",
+      "properties": {
+        "name": "Retrieval-Augmented LLM"
+      }
+    },
+    {
+      "id": "dataset:external_corpus",
+      "type": "Dataset",
+      "properties": {
+        "name": "external corpus"
+      }
+    },
+    {
+      "id": "dataset:knowledge_corpus",
+      "type": "Dataset",
+      "properties": {
+        "name": "knowledge corpus"
+      }
+    },
+    {
+      "id": "concept:retrieval_augmented_generation",
+      "type": "Concept",
+      "properties": {
+        "name": "Retrieval-Augmented Generation"
+      }
+    },
+    {
+      "id": "concept:hallucination_mitigation",
+      "type": "Concept",
+      "properties": {
+        "name": "Hallucination Mitigation"
+      }
+    },
+    {
+      "id": "concept:query_reformulation",
+      "type": "Concept",
+      "properties": {
+        "name": "Query Reformulation"
+      }
+    },
+    {
+      "id": "concept:reference_aware_generation",
+      "type": "Concept",
+      "properties": {
+        "name": "Reference-Aware Generation"
+      }
+    },
+    {
+      "id": "concept:fact_verification",
+      "type": "Concept",
+      "properties": {
+        "name": "Fact Verification"
+      }
+    },
+    {
+      "id": "concept:modular_llm_pipeline",
+      "type": "Concept",
+      "properties": {
+        "name": "Modular LLM Pipeline"
+      }
+    },
+    {
+      "id": "concept:external_knowledge_integration",
+      "type": "Concept",
+      "properties": {
+        "name": "External Knowledge Integration"
+      }
+    },
+    {
+      "id": "concept:disentangled_architecture",
+      "type": "Concept",
+      "properties": {
+        "name": "Disentangled Architecture"
+      }
+    },
+    {
+      "id": "concept:conversational_dense_retrieval",
+      "type": "Concept",
+      "properties": {
+        "name": "Conversational Dense Retrieval"
+      }
+    },
+    {
+      "id": "concept:instruction_tuned_llm_usage",
+      "type": "Concept",
+      "properties": {
+        "name": "Instruction-Tuned LLM Usage"
+      }
+    },
+    {
+      "id": "2306.05212v1.pdf_metric_0",
+      "type": "Metric",
+      "properties": {
+        "name": "sliding window size",
+        "value": 512.0,
+        "unit": "tokens",
+        "dataset": "external corpus"
+      }
+    },
+    {
+      "id": "2306.05212v1.pdf_metric_1",
+      "type": "Metric",
+      "properties": {
+        "name": "step",
+        "value": 256.0,
+        "unit": "tokens",
+        "dataset": "external corpus"
+      }
+    },
+    {
+      "id": "2306.05212v1.pdf_metric_2",
+      "type": "Metric",
+      "properties": {
+        "name": "top-K",
+        "value": 3.0,
+        "unit": "documents",
+        "dataset": "external corpus"
+      }
+    },
+    {
+      "id": "2411.15497v3.pdf",
+      "type": "Paper",
+      "properties": {
+        "claims": [
+          "AeroGen is the first model to simultaneously support horizontal and rotated bounding box condition generation for remote sensing image object detection.",
+          "The synthetic data produced by AeroGen improve mAP on DIOR, DIOR-R, and HRSC by 3.7%, 4.3%, and 2.43%, respectively.",
+          "Rare object classes (GF, DAM, APO) show mAP improvements of 17.8%, 14.7%, and 12.6%, respectively.",
+          "The proposed end-to-end data augmentation framework synthesizes RSIOD data directly via conditional generative models, eliminating the need for additional instance-pasting procedures.",
+          "The framework integrates a diversity-conditioned generator and a filtering mechanism to enhance both diversity and quality of generated images."
+        ],
+        "limitations": [
+          "Dependence on high-quality labeled layout priors (i.e., horizontal and rotated bounding box annotations) for conditional generation.",
+          "No evaluation of annotation cost reduction, real-world deployment feasibility, or human-in-the-loop validation.",
+          "Limited discussion of generalization to unseen object categories, cross-sensor modalities (e.g., SAR), or domain shifts beyond optical remote sensing.",
+          "Computational cost, inference latency, or memory footprint of AeroGen is not reported or benchmarked against alternatives (e.g., GANs or autoregressive models)."
+        ]
+      }
+    },
+    {
+      "id": "method:aerogen",
+      "type": "Method",
+      "properties": {
+        "name": "AeroGen"
+      }
+    },
+    {
+      "id": "method:layout_controllable_diffusion_generative_model",
+      "type": "Method",
+      "properties": {
+        "name": "layout-controllable diffusion generative model"
+      }
+    },
+    {
+      "id": "method:end_to_end_data_augmentation_framework",
+      "type": "Method",
+      "properties": {
+        "name": "end-to-end data augmentation framework"
+      }
+    },
+    {
+      "id": "method:diversity_conditioned_generator",
+      "type": "Method",
+      "properties": {
+        "name": "diversity-conditioned generator"
+      }
+    },
+    {
+      "id": "method:filtering_mechanism",
+      "type": "Method",
+      "properties": {
+        "name": "filtering mechanism"
+      }
+    },
+    {
+      "id": "dataset:dior",
+      "type": "Dataset",
+      "properties": {
+        "name": "DIOR"
+      }
+    },
+    {
+      "id": "dataset:dior_r",
+      "type": "Dataset",
+      "properties": {
+        "name": "DIOR-R"
+      }
+    },
+    {
+      "id": "dataset:hrsc",
+      "type": "Dataset",
+      "properties": {
+        "name": "HRSC"
+      }
+    },
+    {
+      "id": "dataset:rsiod",
+      "type": "Dataset",
+      "properties": {
+        "name": "RSIOD"
+      }
+    },
+    {
+      "id": "concept:remote_sensing_image_object_detection",
+      "type": "Concept",
+      "properties": {
+        "name": "remote sensing image object detection"
+      }
+    },
+    {
+      "id": "concept:diffusion_based_image_generation",
+      "type": "Concept",
+      "properties": {
+        "name": "diffusion-based image generation"
+      }
+    },
+    {
+      "id": "concept:layout_conditioning",
+      "type": "Concept",
+      "properties": {
+        "name": "layout conditioning"
+      }
+    },
+    {
+      "id": "concept:rotated_bounding_boxes",
+      "type": "Concept",
+      "properties": {
+        "name": "rotated bounding boxes"
+      }
+    },
+    {
+      "id": "concept:synthetic_data_augmentation",
+      "type": "Concept",
+      "properties": {
+        "name": "synthetic data augmentation"
+      }
+    },
+    {
+      "id": "concept:conditional_image_generation",
+      "type": "Concept",
+      "properties": {
+        "name": "conditional image generation"
+      }
+    },
+    {
+      "id": "concept:data_scarcity_mitigation",
+      "type": "Concept",
+      "properties": {
+        "name": "data scarcity mitigation"
+      }
+    },
+    {
+      "id": "concept:quality_diversity_tradeoff",
+      "type": "Concept",
+      "properties": {
+        "name": "quality-diversity tradeoff"
+      }
+    },
+    {
+      "id": "concept:end_to_end_augmentation",
+      "type": "Concept",
+      "properties": {
+        "name": "end-to-end augmentation"
+      }
+    },
+    {
+      "id": "2411.15497v3.pdf_metric_0",
+      "type": "Metric",
+      "properties": {
+        "name": "mAP",
+        "value": 3.7,
+        "unit": "%",
+        "dataset": "DIOR"
+      }
+    },
+    {
+      "id": "2411.15497v3.pdf_metric_1",
+      "type": "Metric",
+      "properties": {
+        "name": "mAP",
+        "value": 4.3,
+        "unit": "%",
+        "dataset": "DIOR-R"
+      }
+    },
+    {
+      "id": "2411.15497v3.pdf_metric_2",
+      "type": "Metric",
+      "properties": {
+        "name": "mAP",
+        "value": 2.43,
+        "unit": "%",
+        "dataset": "HRSC"
+      }
+    },
+    {
+      "id": "2411.15497v3.pdf_metric_3",
+      "type": "Metric",
+      "properties": {
+        "name": "mAP",
+        "value": 17.8,
+        "unit": "%",
+        "dataset": "GF"
+      }
+    },
+    {
+      "id": "2411.15497v3.pdf_metric_4",
+      "type": "Metric",
+      "properties": {
+        "name": "mAP",
+        "value": 14.7,
+        "unit": "%",
+        "dataset": "DAM"
+      }
+    },
+    {
+      "id": "2411.15497v3.pdf_metric_5",
+      "type": "Metric",
+      "properties": {
+        "name": "mAP",
+        "value": 12.6,
+        "unit": "%",
+        "dataset": "APO"
+      }
+    },
+    {
       "id": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
       "type": "Paper",
       "properties": {
         "claims": [
-          "LLMs can significantly augment or substitute real-world datasets in data-scarce scenarios",
-          "Synthetic data improves model performance in low-resource tasks by 3–26%",
-          "LLM-generated code can be validated for functional correctness through execution",
-          "Synthetic data generation reduces annotation costs and enables data augmentation",
-          "Retrieval-augmented pipelines improve factual accuracy in generated text",
-          "Iterative self-training on synthetic data risks model collapse",
-          "Filtering and weighting synthetic examples improve data quality",
-          "Reinforcement learning with execution feedback enhances code synthesis reliability"
+          "LLMs can significantly augment or substitute real-world datasets",
+          "Synthetic data boosts model performance in low-resource settings",
+          "Reduces annotation costs and enables data augmentation",
+          "Improvements of 3-26% observed with synthetic augmentation"
         ],
         "limitations": [
-          "Generated text may contain factual inaccuracies",
-          "Stylistic and distributional realism of synthetic data is often insufficient",
-          "Risk of bias amplification in LLM-generated data",
-          "Potential for model collapse with iterative self-training",
-          "Challenges in maintaining diversity while preserving data fidelity"
+          "Factual inaccuracies in generated text",
+          "Insufficient stylistic or distributional realism",
+          "Risks of bias amplification",
+          "Model collapse from iterative self-training",
+          "Ensuring data fidelity and factuality"
         ]
       }
     },
@@ -31,27 +410,6 @@
       }
     },
     {
-      "id": "method:retrieval_augmented_generation",
-      "type": "Method",
-      "properties": {
-        "name": "Retrieval-augmented generation"
-      }
-    },
-    {
-      "id": "method:self_instruct_methods",
-      "type": "Method",
-      "properties": {
-        "name": "Self-instruct methods"
-      }
-    },
-    {
-      "id": "method:reinforcement_learning_with_feedback",
-      "type": "Method",
-      "properties": {
-        "name": "Reinforcement learning with feedback"
-      }
-    },
-    {
       "id": "method:iterative_self_refinement",
       "type": "Method",
       "properties": {
@@ -59,24 +417,17 @@
       }
     },
     {
-      "id": "method:zero_shot_prompting",
+      "id": "method:reinforcement_learning",
       "type": "Method",
       "properties": {
-        "name": "Zero-shot prompting"
+        "name": "Reinforcement learning"
       }
     },
     {
-      "id": "method:few_shot_prompting",
+      "id": "method:self_instruct_methods",
       "type": "Method",
       "properties": {
-        "name": "Few-shot prompting"
-      }
-    },
-    {
-      "id": "method:knowledge_integration",
-      "type": "Method",
-      "properties": {
-        "name": "Knowledge integration"
+        "name": "Self-instruct methods"
       }
     },
     {
@@ -94,38 +445,24 @@
       }
     },
     {
-      "id": "concept:synthetic_data_generation",
-      "type": "Concept",
-      "properties": {
-        "name": "Synthetic data generation"
-      }
-    },
-    {
       "id": "concept:large_language_models",
       "type": "Concept",
       "properties": {
-        "name": "Large language models"
+        "name": "Large Language Models"
       }
     },
     {
-      "id": "concept:text_augmentation",
+      "id": "concept:text_data_augmentation",
       "type": "Concept",
       "properties": {
-        "name": "Text augmentation"
+        "name": "Text data augmentation"
       }
     },
     {
-      "id": "concept:code_synthesis",
+      "id": "concept:code_data_synthesis",
       "type": "Concept",
       "properties": {
-        "name": "Code synthesis"
-      }
-    },
-    {
-      "id": "concept:prompt_engineering",
-      "type": "Concept",
-      "properties": {
-        "name": "Prompt engineering"
+        "name": "Code data synthesis"
       }
     },
     {
@@ -143,10 +480,17 @@
       }
     },
     {
-      "id": "concept:data_fidelity",
+      "id": "concept:bias_amplification",
       "type": "Concept",
       "properties": {
-        "name": "Data fidelity"
+        "name": "Bias amplification"
+      }
+    },
+    {
+      "id": "concept:natural_language_processing",
+      "type": "Concept",
+      "properties": {
+        "name": "Natural language processing"
       }
     },
     {
@@ -154,13 +498,913 @@
       "type": "Metric",
       "properties": {
         "name": "Performance improvement",
-        "value": 14.5,
+        "value": "3-26",
         "unit": "%",
-        "dataset": "low-data regimes"
+        "dataset": "Low-data regimes"
       }
     }
   ],
   "edges": [
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "method:request_rewriting",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "method:document_retrieval",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "method:passage_extraction",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "method:answer_generation",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "method:fact_checking",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "method:retrieval_augmented_llm",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "dataset:external_corpus",
+      "relation": "EVALUATED_ON",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "dataset:knowledge_corpus",
+      "relation": "EVALUATED_ON",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:hallucination_mitigation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:fact_verification",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:modular_llm_pipeline",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:external_knowledge_integration",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:disentangled_architecture",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:conversational_dense_retrieval",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "concept:instruction_tuned_llm_usage",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:hallucination_mitigation",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:query_reformulation",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:reference_aware_generation",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:fact_verification",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:modular_llm_pipeline",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:hallucination_mitigation",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:hallucination_mitigation",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:fact_verification",
+      "target": "concept:hallucination_mitigation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:hallucination_mitigation",
+      "target": "concept:modular_llm_pipeline",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:query_reformulation",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:fact_verification",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:modular_llm_pipeline",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:fact_verification",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:modular_llm_pipeline",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:fact_verification",
+      "target": "concept:modular_llm_pipeline",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:request_rewriting",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:request_rewriting",
+      "target": "concept:hallucination_mitigation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:request_rewriting",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:request_rewriting",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:request_rewriting",
+      "target": "concept:fact_verification",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:request_rewriting",
+      "target": "concept:modular_llm_pipeline",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:document_retrieval",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:document_retrieval",
+      "target": "concept:hallucination_mitigation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:document_retrieval",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:document_retrieval",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:document_retrieval",
+      "target": "concept:fact_verification",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:document_retrieval",
+      "target": "concept:modular_llm_pipeline",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:passage_extraction",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:passage_extraction",
+      "target": "concept:hallucination_mitigation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:passage_extraction",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:passage_extraction",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:passage_extraction",
+      "target": "concept:fact_verification",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:passage_extraction",
+      "target": "concept:modular_llm_pipeline",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:answer_generation",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:answer_generation",
+      "target": "concept:hallucination_mitigation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:answer_generation",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:answer_generation",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:answer_generation",
+      "target": "concept:fact_verification",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:answer_generation",
+      "target": "concept:modular_llm_pipeline",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:fact_checking",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:fact_checking",
+      "target": "concept:hallucination_mitigation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:fact_checking",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:fact_checking",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:fact_checking",
+      "target": "concept:fact_verification",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:fact_checking",
+      "target": "concept:modular_llm_pipeline",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:retrieval_augmented_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:hallucination_mitigation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:query_reformulation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:reference_aware_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:fact_verification",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:modular_llm_pipeline",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "2306.05212v1.pdf_metric_0",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf_metric_0",
+      "target": "dataset:external_corpus",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "2306.05212v1.pdf_metric_1",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf_metric_1",
+      "target": "dataset:external_corpus",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf",
+      "target": "2306.05212v1.pdf_metric_2",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2306.05212v1.pdf_metric_2",
+      "target": "dataset:external_corpus",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "method:aerogen",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "method:layout_controllable_diffusion_generative_model",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "method:end_to_end_data_augmentation_framework",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "method:diversity_conditioned_generator",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "method:filtering_mechanism",
+      "relation": "USES",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "dataset:dior",
+      "relation": "EVALUATED_ON",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "dataset:dior_r",
+      "relation": "EVALUATED_ON",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "dataset:hrsc",
+      "relation": "EVALUATED_ON",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "dataset:rsiod",
+      "relation": "EVALUATED_ON",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "concept:remote_sensing_image_object_detection",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "concept:diffusion_based_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "concept:layout_conditioning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "concept:conditional_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "concept:data_scarcity_mitigation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "concept:quality_diversity_tradeoff",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "concept:end_to_end_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:diffusion_based_image_generation",
+      "target": "concept:remote_sensing_image_object_detection",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:layout_conditioning",
+      "target": "concept:remote_sensing_image_object_detection",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:remote_sensing_image_object_detection",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:remote_sensing_image_object_detection",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:conditional_image_generation",
+      "target": "concept:remote_sensing_image_object_detection",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:diffusion_based_image_generation",
+      "target": "concept:layout_conditioning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:diffusion_based_image_generation",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:diffusion_based_image_generation",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:conditional_image_generation",
+      "target": "concept:diffusion_based_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:layout_conditioning",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:layout_conditioning",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:conditional_image_generation",
+      "target": "concept:layout_conditioning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:rotated_bounding_boxes",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:conditional_image_generation",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:conditional_image_generation",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:aerogen",
+      "target": "concept:remote_sensing_image_object_detection",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:aerogen",
+      "target": "concept:diffusion_based_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:aerogen",
+      "target": "concept:layout_conditioning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:aerogen",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:aerogen",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:aerogen",
+      "target": "concept:conditional_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:layout_controllable_diffusion_generative_model",
+      "target": "concept:remote_sensing_image_object_detection",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:layout_controllable_diffusion_generative_model",
+      "target": "concept:diffusion_based_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:layout_controllable_diffusion_generative_model",
+      "target": "concept:layout_conditioning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:layout_controllable_diffusion_generative_model",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:layout_controllable_diffusion_generative_model",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:layout_controllable_diffusion_generative_model",
+      "target": "concept:conditional_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:end_to_end_data_augmentation_framework",
+      "target": "concept:remote_sensing_image_object_detection",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:end_to_end_data_augmentation_framework",
+      "target": "concept:diffusion_based_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:end_to_end_data_augmentation_framework",
+      "target": "concept:layout_conditioning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:end_to_end_data_augmentation_framework",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:end_to_end_data_augmentation_framework",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:end_to_end_data_augmentation_framework",
+      "target": "concept:conditional_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:diversity_conditioned_generator",
+      "target": "concept:remote_sensing_image_object_detection",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:diversity_conditioned_generator",
+      "target": "concept:diffusion_based_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:diversity_conditioned_generator",
+      "target": "concept:layout_conditioning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:diversity_conditioned_generator",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:diversity_conditioned_generator",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:diversity_conditioned_generator",
+      "target": "concept:conditional_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:filtering_mechanism",
+      "target": "concept:remote_sensing_image_object_detection",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:filtering_mechanism",
+      "target": "concept:diffusion_based_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:filtering_mechanism",
+      "target": "concept:layout_conditioning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:filtering_mechanism",
+      "target": "concept:rotated_bounding_boxes",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:filtering_mechanism",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:filtering_mechanism",
+      "target": "concept:conditional_image_generation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "2411.15497v3.pdf_metric_0",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf_metric_0",
+      "target": "dataset:dior",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "2411.15497v3.pdf_metric_1",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf_metric_1",
+      "target": "dataset:dior_r",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "2411.15497v3.pdf_metric_2",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf_metric_2",
+      "target": "dataset:hrsc",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "2411.15497v3.pdf_metric_3",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf_metric_3",
+      "target": "dataset:gf",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "2411.15497v3.pdf_metric_4",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf_metric_4",
+      "target": "dataset:dam",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf",
+      "target": "2411.15497v3.pdf_metric_5",
+      "relation": "REPORTS",
+      "properties": {}
+    },
+    {
+      "source": "2411.15497v3.pdf_metric_5",
+      "target": "dataset:apo",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
     {
       "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
       "target": "method:prompt_based_generation",
@@ -169,19 +1413,7 @@
     },
     {
       "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "method:retrieval_augmented_generation",
-      "relation": "USES",
-      "properties": {}
-    },
-    {
-      "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "method:self_instruct_methods",
-      "relation": "USES",
-      "properties": {}
-    },
-    {
-      "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "method:reinforcement_learning_with_feedback",
+      "target": "method:retrieval_augmented_llm",
       "relation": "USES",
       "properties": {}
     },
@@ -193,19 +1425,13 @@
     },
     {
       "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "method:zero_shot_prompting",
+      "target": "method:reinforcement_learning",
       "relation": "USES",
       "properties": {}
     },
     {
       "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "method:few_shot_prompting",
-      "relation": "USES",
-      "properties": {}
-    },
-    {
-      "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "method:knowledge_integration",
+      "target": "method:self_instruct_methods",
       "relation": "USES",
       "properties": {}
     },
@@ -223,7 +1449,7 @@
     },
     {
       "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "concept:synthetic_data_generation",
+      "target": "concept:synthetic_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
@@ -235,19 +1461,13 @@
     },
     {
       "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "concept:text_augmentation",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "concept:code_synthesis",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "concept:prompt_engineering",
+      "target": "concept:code_data_synthesis",
       "relation": "RELATED_TO",
       "properties": {}
     },
@@ -265,103 +1485,109 @@
     },
     {
       "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
-      "target": "concept:data_fidelity",
+      "target": "concept:bias_amplification",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
+      "target": "concept:natural_language_processing",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "concept:large_language_models",
-      "target": "concept:synthetic_data_generation",
+      "target": "concept:synthetic_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "concept:synthetic_data_generation",
-      "target": "concept:text_augmentation",
+      "source": "concept:synthetic_data_augmentation",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "concept:code_synthesis",
-      "target": "concept:synthetic_data_generation",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "concept:prompt_engineering",
-      "target": "concept:synthetic_data_generation",
+      "source": "concept:code_data_synthesis",
+      "target": "concept:synthetic_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "concept:instruction_tuning",
-      "target": "concept:synthetic_data_generation",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:model_collapse",
+      "target": "concept:synthetic_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "concept:large_language_models",
-      "target": "concept:text_augmentation",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "concept:code_synthesis",
+      "source": "concept:code_data_synthesis",
+      "target": "concept:large_language_models",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:instruction_tuning",
       "target": "concept:large_language_models",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "concept:large_language_models",
-      "target": "concept:prompt_engineering",
+      "target": "concept:model_collapse",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:code_data_synthesis",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "concept:instruction_tuning",
-      "target": "concept:large_language_models",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "concept:code_synthesis",
-      "target": "concept:text_augmentation",
+      "source": "concept:model_collapse",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "concept:prompt_engineering",
-      "target": "concept:text_augmentation",
+      "source": "concept:code_data_synthesis",
+      "target": "concept:instruction_tuning",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "concept:code_data_synthesis",
+      "target": "concept:model_collapse",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "concept:instruction_tuning",
-      "target": "concept:text_augmentation",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "concept:code_synthesis",
-      "target": "concept:prompt_engineering",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "concept:code_synthesis",
-      "target": "concept:instruction_tuning",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "concept:instruction_tuning",
-      "target": "concept:prompt_engineering",
+      "target": "concept:model_collapse",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "method:prompt_based_generation",
-      "target": "concept:synthetic_data_generation",
+      "target": "concept:synthetic_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
@@ -373,19 +1599,13 @@
     },
     {
       "source": "method:prompt_based_generation",
-      "target": "concept:text_augmentation",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "method:prompt_based_generation",
-      "target": "concept:code_synthesis",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:prompt_based_generation",
-      "target": "concept:prompt_engineering",
+      "target": "concept:code_data_synthesis",
       "relation": "RELATED_TO",
       "properties": {}
     },
@@ -396,116 +1616,50 @@
       "properties": {}
     },
     {
-      "source": "method:retrieval_augmented_generation",
-      "target": "concept:synthetic_data_generation",
+      "source": "method:prompt_based_generation",
+      "target": "concept:model_collapse",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:retrieval_augmented_generation",
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:retrieval_augmented_llm",
       "target": "concept:large_language_models",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:retrieval_augmented_generation",
-      "target": "concept:text_augmentation",
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:retrieval_augmented_generation",
-      "target": "concept:code_synthesis",
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:code_data_synthesis",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:retrieval_augmented_generation",
-      "target": "concept:prompt_engineering",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:retrieval_augmented_generation",
+      "source": "method:retrieval_augmented_llm",
       "target": "concept:instruction_tuning",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:self_instruct_methods",
-      "target": "concept:synthetic_data_generation",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:self_instruct_methods",
-      "target": "concept:large_language_models",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:self_instruct_methods",
-      "target": "concept:text_augmentation",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:self_instruct_methods",
-      "target": "concept:code_synthesis",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:self_instruct_methods",
-      "target": "concept:prompt_engineering",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:self_instruct_methods",
-      "target": "concept:instruction_tuning",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:reinforcement_learning_with_feedback",
-      "target": "concept:synthetic_data_generation",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:reinforcement_learning_with_feedback",
-      "target": "concept:large_language_models",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:reinforcement_learning_with_feedback",
-      "target": "concept:text_augmentation",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:reinforcement_learning_with_feedback",
-      "target": "concept:code_synthesis",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:reinforcement_learning_with_feedback",
-      "target": "concept:prompt_engineering",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:reinforcement_learning_with_feedback",
-      "target": "concept:instruction_tuning",
+      "source": "method:retrieval_augmented_llm",
+      "target": "concept:model_collapse",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "method:iterative_self_refinement",
-      "target": "concept:synthetic_data_generation",
+      "target": "concept:synthetic_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
@@ -517,19 +1671,13 @@
     },
     {
       "source": "method:iterative_self_refinement",
-      "target": "concept:text_augmentation",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
       "source": "method:iterative_self_refinement",
-      "target": "concept:code_synthesis",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:iterative_self_refinement",
-      "target": "concept:prompt_engineering",
+      "target": "concept:code_data_synthesis",
       "relation": "RELATED_TO",
       "properties": {}
     },
@@ -540,110 +1688,80 @@
       "properties": {}
     },
     {
-      "source": "method:zero_shot_prompting",
-      "target": "concept:synthetic_data_generation",
+      "source": "method:iterative_self_refinement",
+      "target": "concept:model_collapse",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:zero_shot_prompting",
+      "source": "method:reinforcement_learning",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:reinforcement_learning",
       "target": "concept:large_language_models",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:zero_shot_prompting",
-      "target": "concept:text_augmentation",
+      "source": "method:reinforcement_learning",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:zero_shot_prompting",
-      "target": "concept:code_synthesis",
+      "source": "method:reinforcement_learning",
+      "target": "concept:code_data_synthesis",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:zero_shot_prompting",
-      "target": "concept:prompt_engineering",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:zero_shot_prompting",
+      "source": "method:reinforcement_learning",
       "target": "concept:instruction_tuning",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:few_shot_prompting",
-      "target": "concept:synthetic_data_generation",
+      "source": "method:reinforcement_learning",
+      "target": "concept:model_collapse",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:few_shot_prompting",
+      "source": "method:self_instruct_methods",
+      "target": "concept:synthetic_data_augmentation",
+      "relation": "RELATED_TO",
+      "properties": {}
+    },
+    {
+      "source": "method:self_instruct_methods",
       "target": "concept:large_language_models",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:few_shot_prompting",
-      "target": "concept:text_augmentation",
+      "source": "method:self_instruct_methods",
+      "target": "concept:text_data_augmentation",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:few_shot_prompting",
-      "target": "concept:code_synthesis",
+      "source": "method:self_instruct_methods",
+      "target": "concept:code_data_synthesis",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:few_shot_prompting",
-      "target": "concept:prompt_engineering",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:few_shot_prompting",
+      "source": "method:self_instruct_methods",
       "target": "concept:instruction_tuning",
       "relation": "RELATED_TO",
       "properties": {}
     },
     {
-      "source": "method:knowledge_integration",
-      "target": "concept:synthetic_data_generation",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:knowledge_integration",
-      "target": "concept:large_language_models",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:knowledge_integration",
-      "target": "concept:text_augmentation",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:knowledge_integration",
-      "target": "concept:code_synthesis",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:knowledge_integration",
-      "target": "concept:prompt_engineering",
-      "relation": "RELATED_TO",
-      "properties": {}
-    },
-    {
-      "source": "method:knowledge_integration",
-      "target": "concept:instruction_tuning",
+      "source": "method:self_instruct_methods",
+      "target": "concept:model_collapse",
       "relation": "RELATED_TO",
       "properties": {}
     },

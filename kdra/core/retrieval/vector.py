@@ -8,38 +8,29 @@ import os
 
 class VectorRetriever(BaseRetriever):
     """
-    Retriever that uses OpenAI embeddings and cosine similarity.
+    Retriever that uses local Sentence-Transformers embeddings and cosine similarity.
     """
     
     def __init__(self, api_key: str = None):
         self.chunks: List[PaperChunk] = []
         self.embeddings: np.ndarray = None
         
-        # Initialize OpenAI client for embeddings
+        # Initialize Local Embedding Model
         try:
-            from openai import OpenAI
-            import yaml
-            
-            # Load config similar to Engine
-            config = {}
-            config_path = os.path.abspath("llm_config.yaml")
-            if os.path.exists(config_path):
-                with open(config_path, 'r') as f:
-                    config = yaml.safe_load(f) or {}
-
-            self.api_key = api_key or os.getenv("OPENAI_API_KEY") or config.get("api_key")
-            self.base_url = os.getenv("OPENAI_BASE_URL") or config.get("base_url")
-            
-            self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
-            self.model = "text-embedding-3-small" # Cost effective model
-            
+            from sentence_transformers import SentenceTransformer
+            # Using BGE-small, a very fast and high-quality embedding model suitable for academic text
+            self.model = SentenceTransformer("BAAI/bge-small-en-v1.5")
+            print("Loaded local embedding model: BAAI/bge-small-en-v1.5")
         except ImportError:
-            print("Warning: OpenAI or PyYAML not installed. VectorRetriever will fail.")
-            self.client = None
+            print("Warning: sentence_transformers not installed. VectorRetriever will fail. Please run `pip install sentence-transformers`.")
+            self.model = None
 
     def _get_embedding(self, text: str) -> List[float]:
+        if not self.model:
+            raise RuntimeError("Embedding model not loaded.")
         text = text.replace("\n", " ")
-        return self.client.embeddings.create(input=[text], model=self.model).data[0].embedding
+        # encode returns numpy array by default
+        return self.model.encode(text, normalize_embeddings=True)
 
     def index(self, chunks: List[PaperChunk]) -> None:
         """
@@ -49,21 +40,21 @@ class VectorRetriever(BaseRetriever):
             return
             
         self.chunks = chunks
-        print(f"Indexing {len(chunks)} chunks...")
+        print(f"Indexing {len(chunks)} chunks with local model...")
         
-        embeddings_list = []
-        # Batching could be better, but doing one by one for simplicity/safety first
-        # In production, use batching!
-        for i, chunk in enumerate(chunks):
-            try:
-                emb = self._get_embedding(chunk.text)
-                embeddings_list.append(emb)
-            except Exception as e:
-                print(f"Error embedding chunk {i}: {e}")
-                # Use zero vector as fallback to keep alignment
-                embeddings_list.append([0.0] * 1536) 
+        if not self.model:
+            print("Cannot index: model not loaded.")
+            return
 
-        self.embeddings = np.array(embeddings_list)
+        # Batch encode is much faster with sentence-transformers
+        texts = [chunk.text.replace("\n", " ") for chunk in chunks]
+        try:
+            # Generate embedded vectors for all chunks at once
+            self.embeddings = self.model.encode(texts, normalize_embeddings=True, show_progress_bar=True)
+        except Exception as e:
+            print(f"Error embedding chunks: {e}")
+            self.embeddings = np.zeros((len(chunks), 384)) # fallback to bge-small dim
+
         print("Indexing complete.")
 
     def retrieve(self, query: str, top_k: int = 5) -> List[Tuple[PaperChunk, float]]:
@@ -74,13 +65,9 @@ class VectorRetriever(BaseRetriever):
             return []
             
         try:
-            query_emb = np.array(self._get_embedding(query))
+            query_emb = self._get_embedding(query)
             
-            # Cosine similarity: (A . B) / (||A|| * ||B||)
-            # Assuming OpenAI embeddings are normalized? Usually yes, but let's be safe.
-            # Actually text-embedding-3-small are normalized.
-            
-            # Compute dot products
+            # Vectors are already normalized, so dot product == cosine similarity
             scores = np.dot(self.embeddings, query_emb)
             
             # Get top K indices

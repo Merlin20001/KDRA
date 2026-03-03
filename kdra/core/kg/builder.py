@@ -7,6 +7,7 @@ from kdra.core.schemas import (
     NodeType, 
     EdgeType
 )
+from kdra.core.ontology.normalizer import VectorOntologyNormalizer
 
 class GraphBuilder:
     """
@@ -14,6 +15,9 @@ class GraphBuilder:
     Ensures deterministic node IDs and relationship mapping.
     """
     
+    def __init__(self):
+        self.normalizer = VectorOntologyNormalizer()
+        
     def build_subgraph(self, extraction: PaperExtraction) -> KnowledgeGraph:
         """
         Converts a single paper extraction into a subgraph of nodes and edges.
@@ -147,28 +151,11 @@ class GraphBuilder:
 
     def _normalize_id(self, node_type: NodeType, name: str) -> str:
         """
-        Creates a deterministic ID from a name.
+        Creates a deterministic ID from a name, resolving semantic duplicates
+        using Vector embeddings if available.
         e.g., "Method" + "Transformer" -> "method:transformer"
         """
-        # 1. Lowercase and strip
-        clean_name = name.strip().lower()
-        
-        # 2. Remove common punctuation (keep hyphens/underscores if meaningful?)
-        # Let's replace spaces and special chars with underscores
-        import re
-        clean_name = re.sub(r'[^a-z0-9]', '_', clean_name)
-        
-        # 3. Collapse multiple underscores
-        clean_name = re.sub(r'_+', '_', clean_name)
-        
-        # 4. Strip trailing/leading underscores
-        clean_name = clean_name.strip('_')
-        
-        # 5. Simple singularization (very naive)
-        # if clean_name.endswith('s') and not clean_name.endswith('ss'):
-        #     clean_name = clean_name[:-1]
-            
-        return f"{node_type.value.lower()}:{clean_name}"
+        return self.normalizer.normalize_and_dedupe(node_type.value, name)
 
     def merge_graphs(self, subgraphs: List[KnowledgeGraph]) -> KnowledgeGraph:
         """

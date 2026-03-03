@@ -3,6 +3,7 @@ from typing import List, Dict, Any
 from kdra.core.schemas import PaperChunk, PaperExtraction
 from kdra.core.reasoning.engine import BaseReasoningEngine, MockReasoningEngine
 from kdra.core.reasoning.prompts import EXTRACTION_SYSTEM_PROMPT, DRAFT_PROMPT_TEMPLATE, VERIFICATION_PROMPT_TEMPLATE
+from kdra.core.reasoning.ner import GlinerNER
 
 class PaperExtractor:
     """
@@ -23,6 +24,7 @@ class PaperExtractor:
             engine: The LLM engine to use. Defaults to MockReasoningEngine.
         """
         self.engine = engine or MockReasoningEngine()
+        self.ner = GlinerNER()
 
     def extract(self, paper_id: str, chunks: List[PaperChunk]) -> PaperExtraction:
         """
@@ -39,8 +41,14 @@ class PaperExtractor:
         # TODO: Implement smarter context management (e.g., map-reduce for long papers)
         full_text = "\n\n".join([c.text for c in chunks])
         
+        # 1.5 High-Recall GLiNER Extraction
+        candidates = self.ner.extract_candidates(full_text)
+        
         # 2. Draft Extraction
-        draft_prompt = DRAFT_PROMPT_TEMPLATE.format(context=full_text[:10000]) # Truncate for safety in this demo
+        draft_prompt = DRAFT_PROMPT_TEMPLATE.format(
+            context=full_text[:10000],  # Truncate for safety in this demo
+            candidates=json.dumps(candidates, indent=2)
+        )
         draft_response = self.engine.generate(draft_prompt, system_prompt=EXTRACTION_SYSTEM_PROMPT)
         
         # 3. Verification (Self-Correction)

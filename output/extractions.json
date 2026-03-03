@@ -1,15 +1,165 @@
 [
   {
+    "paper_id": "2306.05212v1.pdf",
+    "methods": [
+      "Request Rewriting",
+      "Document Retrieval",
+      "Passage Extraction",
+      "Answer Generation",
+      "Fact Checking",
+      "Retrieval-Augmented LLM"
+    ],
+    "datasets": [
+      "external corpus",
+      "knowledge corpus",
+      "external knowledge corpus"
+    ],
+    "metrics": [
+      {
+        "name": "sliding window size",
+        "value": 512.0,
+        "unit": "tokens",
+        "dataset": "external corpus",
+        "confidence": null
+      },
+      {
+        "name": "step",
+        "value": 256.0,
+        "unit": "tokens",
+        "dataset": "external corpus",
+        "confidence": null
+      },
+      {
+        "name": "top-K",
+        "value": 3.0,
+        "unit": "documents",
+        "dataset": "external corpus",
+        "confidence": null
+      }
+    ],
+    "claims": [
+      "RETA-LLM reduces hallucination in LLMs by grounding generation in retrieved external knowledge.",
+      "RETA-LLM enables answering in-domain questions inaccessible to vanilla LLMs trained on public data.",
+      "The disentangled design separates IR systems and LLMs, enabling independent customization of search engines and language models.",
+      "LLMs are used not only for answer generation but also for request rewriting, passage extraction, and fact checking.",
+      "RETA-LLM provides a complete, ready-to-use pipeline for building domain-specific retrieval-augmented LLM systems from scratch.",
+      "RETA-LLM is part of YuLan, an open-source LLM initiative by Gaoling School of Artificial Intelligence, Renmin University of China."
+    ],
+    "limitations": [
+      "RETA-LLM is still under development with unresolved issues.",
+      "Input length constraints of LLMs necessitate heuristic passage extraction (e.g., sliding window), risking information loss.",
+      "Reliance on LLMs for fact checking inherits their inherent unreliability — no external verification oracle is employed.",
+      "Default configuration uses a dense retriever without benchmarking against sparse or hybrid alternatives.",
+      "No evaluation metrics (e.g., accuracy, faithfulness, retrieval recall) are reported in the provided text.",
+      "The toolkit’s effectiveness is not empirically validated in the paper — no experiments, baselines, or ablation studies are presented."
+    ],
+    "concepts": [
+      "Retrieval-Augmented Generation",
+      "Hallucination Mitigation",
+      "Query Reformulation",
+      "Reference-Aware Generation",
+      "Fact Verification",
+      "Modular LLM Pipeline",
+      "External Knowledge Integration",
+      "Disentangled Architecture",
+      "Conversational Dense Retrieval",
+      "Instruction-Tuned LLM Usage"
+    ],
+    "evidence_spans": {}
+  },
+  {
+    "paper_id": "2411.15497v3.pdf",
+    "methods": [
+      "AeroGen",
+      "layout-controllable diffusion generative model",
+      "end-to-end data augmentation framework",
+      "diversity-conditioned generator",
+      "filtering mechanism"
+    ],
+    "datasets": [
+      "DIOR",
+      "DIOR-R",
+      "HRSC",
+      "RSIOD"
+    ],
+    "metrics": [
+      {
+        "name": "mAP",
+        "value": 3.7,
+        "unit": "%",
+        "dataset": "DIOR",
+        "confidence": null
+      },
+      {
+        "name": "mAP",
+        "value": 4.3,
+        "unit": "%",
+        "dataset": "DIOR-R",
+        "confidence": null
+      },
+      {
+        "name": "mAP",
+        "value": 2.43,
+        "unit": "%",
+        "dataset": "HRSC",
+        "confidence": null
+      },
+      {
+        "name": "mAP",
+        "value": 17.8,
+        "unit": "%",
+        "dataset": "GF",
+        "confidence": null
+      },
+      {
+        "name": "mAP",
+        "value": 14.7,
+        "unit": "%",
+        "dataset": "DAM",
+        "confidence": null
+      },
+      {
+        "name": "mAP",
+        "value": 12.6,
+        "unit": "%",
+        "dataset": "APO",
+        "confidence": null
+      }
+    ],
+    "claims": [
+      "AeroGen is the first model to simultaneously support horizontal and rotated bounding box condition generation for remote sensing image object detection.",
+      "The synthetic data produced by AeroGen improve mAP on DIOR, DIOR-R, and HRSC by 3.7%, 4.3%, and 2.43%, respectively.",
+      "Rare object classes (GF, DAM, APO) show mAP improvements of 17.8%, 14.7%, and 12.6%, respectively.",
+      "The proposed end-to-end data augmentation framework synthesizes RSIOD data directly via conditional generative models, eliminating the need for additional instance-pasting procedures.",
+      "The framework integrates a diversity-conditioned generator and a filtering mechanism to enhance both diversity and quality of generated images."
+    ],
+    "limitations": [
+      "Dependence on high-quality labeled layout priors (i.e., horizontal and rotated bounding box annotations) for conditional generation.",
+      "No evaluation of annotation cost reduction, real-world deployment feasibility, or human-in-the-loop validation.",
+      "Limited discussion of generalization to unseen object categories, cross-sensor modalities (e.g., SAR), or domain shifts beyond optical remote sensing.",
+      "Computational cost, inference latency, or memory footprint of AeroGen is not reported or benchmarked against alternatives (e.g., GANs or autoregressive models)."
+    ],
+    "concepts": [
+      "remote sensing image object detection",
+      "diffusion-based image generation",
+      "layout conditioning",
+      "rotated bounding boxes",
+      "synthetic data augmentation",
+      "conditional image generation",
+      "data scarcity mitigation",
+      "quality-diversity tradeoff",
+      "end-to-end augmentation"
+    ],
+    "evidence_spans": {}
+  },
+  {
     "paper_id": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
     "methods": [
       "Prompt-based generation",
       "Retrieval-augmented generation",
-      "Self-instruct methods",
-      "Reinforcement learning with feedback",
       "Iterative self-refinement",
-      "Zero-shot prompting",
-      "Few-shot prompting",
-      "Knowledge integration"
+      "Reinforcement learning",
+      "Self-instruct methods"
     ],
     "datasets": [
       "Code Alpaca",
@@ -18,38 +168,34 @@
     "metrics": [
       {
         "name": "Performance improvement",
-        "value": 14.5,
+        "value": "3-26",
         "unit": "%",
-        "dataset": "low-data regimes",
+        "dataset": "Low-data regimes",
         "confidence": null
       }
     ],
     "claims": [
-      "LLMs can significantly augment or substitute real-world datasets in data-scarce scenarios",
-      "Synthetic data improves model performance in low-resource tasks by 3\u201326%",
-      "LLM-generated code can be validated for functional correctness through execution",
-      "Synthetic data generation reduces annotation costs and enables data augmentation",
-      "Retrieval-augmented pipelines improve factual accuracy in generated text",
-      "Iterative self-training on synthetic data risks model collapse",
-      "Filtering and weighting synthetic examples improve data quality",
-      "Reinforcement learning with execution feedback enhances code synthesis reliability"
+      "LLMs can significantly augment or substitute real-world datasets",
+      "Synthetic data boosts model performance in low-resource settings",
+      "Reduces annotation costs and enables data augmentation",
+      "Improvements of 3-26% observed with synthetic augmentation"
     ],
     "limitations": [
-      "Generated text may contain factual inaccuracies",
-      "Stylistic and distributional realism of synthetic data is often insufficient",
-      "Risk of bias amplification in LLM-generated data",
-      "Potential for model collapse with iterative self-training",
-      "Challenges in maintaining diversity while preserving data fidelity"
+      "Factual inaccuracies in generated text",
+      "Insufficient stylistic or distributional realism",
+      "Risks of bias amplification",
+      "Model collapse from iterative self-training",
+      "Ensuring data fidelity and factuality"
     ],
     "concepts": [
       "Synthetic data generation",
-      "Large language models",
-      "Text augmentation",
-      "Code synthesis",
-      "Prompt engineering",
+      "Large Language Models",
+      "Text data augmentation",
+      "Code data synthesis",
       "Instruction tuning",
       "Model collapse",
-      "Data fidelity"
+      "Bias amplification",
+      "Natural language processing"
     ],
     "evidence_spans": {}
   }

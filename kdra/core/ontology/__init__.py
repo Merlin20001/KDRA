@@ -10,6 +10,6 @@ Responsibilities:
 - Track concept frequency
 """
 
-from kdra.core.ontology.normalizer import ConceptNormalizer
+from kdra.core.ontology.normalizer import VectorOntologyNormalizer
 
-__all__ = ["ConceptNormalizer"]
+__all__ = ["VectorOntologyNormalizer"]
