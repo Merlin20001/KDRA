@@ -61,6 +61,7 @@ class PaperExtraction(BaseModel):
     
     Attributes:
         paper_id: ID of the paper.
+        metadata: Detailed paper metadata.
         methods: List of proposed or used methods/models.
         datasets: List of datasets used or introduced.
         metrics: List of performance metrics reported.
@@ -69,6 +70,7 @@ class PaperExtraction(BaseModel):
         evidence_spans: Mapping of extracted fields to source text spans for traceability.
     """
     paper_id: str = Field(..., description="ID of the paper")
+    metadata: Optional[PaperMetadata] = Field(None, description="Detailed paper metadata")
     methods: List[str] = Field(default_factory=list, description="List of proposed or used methods")
     datasets: List[str] = Field(default_factory=list, description="List of datasets used")
     metrics: List[MetricValue] = Field(default_factory=list, description="List of performance metrics")

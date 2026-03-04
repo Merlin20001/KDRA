@@ -11,6 +11,17 @@ from langgraph.prebuilt import create_react_agent
 from langchain_core.prompts import SystemMessagePromptTemplate
 from langchain_core.tools import StructuredTool
 
+# --- Agentic Planner Schema ---
+class QA_SubTask(BaseModel):
+    task_description: str = Field(description="The specific sub-question to answer")
+    suggested_tool: str = Field(description="The recommended tool to use ('search_vector', 'search_kg', 'compare_nodes')")
+
+class QueryPlan(BaseModel):
+    intent: str = Field(description="The primary intent of the user. E.g., 'compare_methods', 'find_dataset_details', 'summarize_paper'")
+    strategy: str = Field(description="The chosen execution strategy: 'graph_first' (if needing relationships), 'vector_first' (if needing text details)")
+    extracted_entities: List[str] = Field(description="Key entities/concepts mentioned in the question")
+    sub_tasks: List[QA_SubTask] = Field(description="Broken down sequential questions needed to arrive at the final answer")
+
 # Define Tool Input Schemas
 class VectorSearchInput(BaseModel):
     query: str = Field(description="The natural language query to search for specific text chunks or details within the papers.")
@@ -46,12 +57,14 @@ class ResearchAssistant:
         else:
             self.llm = None
 
-    def answer(self, question: str, kg: KnowledgeGraph, extractions: List[PaperExtraction]) -> str:
+    def answer(self, question: str, kg: KnowledgeGraph, extractions: List[PaperExtraction], return_contexts: bool = False) -> Any:
         """
         Answers a user question iteratively using graph tools and vector tools.
+        If return_contexts is True, returns a tuple (answer_string, list_of_context_strings).
         """
         if not self.llm:
-            return self.engine.generate(f"Mock Agentic QA for: {question}", system_prompt="", json_mode=False)
+            mock_ans = self.engine.generate(f"Mock Agentic QA for: {question}", system_prompt="", json_mode=False)
+            return (mock_ans, ["Mock Context"]) if return_contexts else mock_ans
             
         self.kg = kg
         self.extractions = extractions
@@ -88,6 +101,12 @@ class ResearchAssistant:
              "CRITICAL RULE: NEVER ask the user which papers they mean. If the user refers to 'these papers' or asks for commonalities, "
              "IMMEDIATELY use the tool `compare_nodes` or `search_kg` or `search_vector` ON THE EXACT PAPER IDs LISTED ABOVE. "
              "Do not wait for the user to provide titles or authors. Just use the IDs directly.\n\n"
+             "STRICT GROUNDING & ANTI-HALLUCINATION RULES (CRITICAL):\n"
+             "1. You must ONLY answer using the exact entities, methods, datasets, and facts returned by your tools.\n"
+             "2. SEVERELY PROHIBITED: Do not invent, guess, or provide external encyclopedic explanations for technical terms. "
+             "If the KG says a paper uses 'dataset:hrsc', just state 'it uses the hrsc dataset'. DO NOT expand it to 'hrsc dataset for high-resolution ship detection' unless a Vector Search explicitly returned that textual definition.\n"
+             "3. If explanations or meanings of methods/datasets are needed, YOU MUST call `search_vector` to fetch the descriptive text. If `search_vector` returns no text, YOU MUST NOT make up an explanation.\n"
+             "4. Do not invent task/domain relationships. Just report the KG structure verbatim unless backed by vectors.\n\n"
              "Guidelines:\n"
              "1. MULTI-HOP: If asked about relationships, trends, or comparisons between papers, start with `search_kg` or `compare_nodes` to identify structural connections.\n"
              "2. DETAIL: Once you find relevant papers/entities from the graph, use `search_vector` to fetch actual evidence snippets.\n"
@@ -100,15 +119,66 @@ class ResearchAssistant:
         agent = create_react_agent(self.llm, tools, prompt=system_prompt)
         
         # Force inject context directly into user's prompt so the LLM cannot ignore it
-        enhanced_question = f"Question: {question}\n\n[SYSTEM DIRECTIVE: The exact papers to analyze are: {active_papers}. You MUST use your tools (compare_nodes/search_kg/search_vector) immediately on these IDs. DO NOT ASK the user to specify the papers.]"
+        plan_str = ""
+        
+        # 3. Dynamic Agentic Planning Phase
+        if hasattr(self.engine, "instructor_client") and self.engine.instructor_client:
+            try:
+                planner_prompt = (
+                    f"Analyze this user question and create a step-by-step tool execution plan.\n"
+                    f"Active Papers (Use as IDs): {active_papers}\n"
+                    f"Question: {question}"
+                )
+                plan_schema = self.engine.generate_structured(
+                    prompt=planner_prompt,
+                    schema_class=QueryPlan,
+                    system_prompt=(
+                        "You are an expert Query routing agent. "
+                        "Decompose the user's complex questions into logical sequential sub-tasks. "
+                        "Determine if Graph-first, Vector-first, or Hybrid is best."
+                    ),
+                    max_retries=2
+                )
+                plan_str = "\n[DYNAMIC ROUTING PLAN (Follow this strictly)]\n"
+                plan_str += f"Intent: {plan_schema.intent}\n"
+                plan_str += f"Strategy: {plan_schema.strategy}\nRecommended Steps:\n"
+                for i, task in enumerate(plan_schema.sub_tasks):
+                    plan_str += f"{i+1}. Use {task.suggested_tool}: {task.task_description}\n"
+                print(plan_str) # Intentionally print to stdout for visibility!
+            except Exception as e:
+                print(f"Warning: Planner routing failed, falling back to direct React behavior. ({e})")
+                pass
+
+        enhanced_question = f"""Question: {question}
+
+[CRITICAL SYSTEM DIRECTIVE: 
+1. The exact papers to analyze are: {active_papers}. 
+2. You MUST use your tools (compare_nodes/search_kg/search_vector) immediately on these IDs. 
+3. EXTREMELY IMPORTANT: When answering, you are STRICTLY FORBIDDEN from explaining, defining, or elaborating on any dataset, method, or concept unless you retrieved that exact definition using `search_vector`. 
+4. If a tool just returns "dataset:hrsc", your final answer MUST simply say "hrsc". DO NOT say "hrsc (a dataset for ship detection)".
+5. Any hallucination of background knowledge will result in immediate failure.]{plan_str}"""
         
         try:
             # invoke returns a dict with 'messages' list; the last AI message is the final output
             response = agent.invoke({"messages": [("user", enhanced_question)]})
+            
+            # Extract retrieved contexts from tool messages for Evaluation
+            tool_contexts = []
+            for msg in response["messages"]:
+                # If message is a ToolMessage (which holds tool outputs)
+                if hasattr(msg, "content") and getattr(msg, "type", "") == "tool":
+                    tool_contexts.append(f"Tool {getattr(msg, 'name', 'unknown')} responded: " + msg.content)
+            
             final_message = response["messages"][-1]
-            return final_message.content
+            answer_text = final_message.content
+            
+            if return_contexts:
+                return answer_text, tool_contexts
+            return answer_text
+            
         except Exception as e:
-            return f"Agent reasoning pipeline failed: {str(e)}"
+            error_msg = f"Agent reasoning pipeline failed: {str(e)}"
+            return (error_msg, []) if return_contexts else error_msg
 
     # --- Tool Implementations ---
 

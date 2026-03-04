@@ -32,13 +32,24 @@ class GraphBuilder:
         edges: List[KnowledgeGraphEdge] = []
         
         # 1. Create Paper Node
+        paper_props = {
+            "claims": extraction.claims,
+            "limitations": extraction.limitations
+        }
+        
+        # Inject real metadata into the node properties if available
+        if getattr(extraction, "metadata", None):
+            meta = extraction.metadata
+            paper_props["title"] = meta.title
+            paper_props["authors"] = meta.authors
+            paper_props["year"] = meta.year
+            paper_props["venue"] = meta.venue
+            paper_props["url"] = meta.url
+
         paper_node = KnowledgeGraphNode(
             id=extraction.paper_id,
             type=NodeType.PAPER,
-            properties={
-                "claims": extraction.claims,
-                "limitations": extraction.limitations
-            }
+            properties=paper_props
         )
         nodes.append(paper_node)
         

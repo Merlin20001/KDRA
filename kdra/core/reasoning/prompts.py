@@ -61,6 +61,29 @@ Output the corrected result as a valid JSON object with the same schema:
 }}
 """
 
+REDUCE_PROMPT_TEMPLATE = """
+You are given multiple partial data extractions obtained from different chunks (segments) of the SAME research paper.
+Your task is to merge, deduplicate, and synthesize all of them into a SINGLE, comprehensive, and cohesive final extraction.
+
+Partial Extractions from chunks:
+{partial_extractions}
+
+Instructions:
+1. Deduplicate concepts, methods, and datasets. Keep canonical names (e.g., if you see "Transformer" and "transformers", just output "Transformer").
+2. For claims and limitations, merge overlapping ideas into cohesive, complete sentences. Drop redundant statements.
+3. For metrics, aggregate all unique metric scores. If exact duplicates exist with the same value/dataset, keep only one.
+4. Output strict JSON matching the schema.
+
+{{
+  "methods": [...],
+  "datasets": [...],
+  "metrics": [...],
+  "claims": [...],
+  "limitations": [...],
+  "concepts": [...]
+}}
+"""
+
 COMPARISON_SYSTEM_PROMPT = """
 You are a senior research scientist performing a meta-analysis of multiple academic papers.
 Your goal is to synthesize insights, compare methodologies, and identify trends across the provided structured data.

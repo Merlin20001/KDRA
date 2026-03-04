@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Any
 import os
 
 class BaseReasoningEngine(ABC):
@@ -19,6 +19,22 @@ class BaseReasoningEngine(ABC):
             
         Returns:
             The generated text response.
+        """
+        pass
+        
+    @abstractmethod
+    def generate_structured(self, prompt: str, schema_class: type, system_prompt: Optional[str] = None, max_retries: int = 3) -> Any:
+        """
+        Generate structured output from the LLM using Pydantic.
+        
+        Args:
+            prompt: The user prompt.
+            schema_class: Pydantic model class to enforce.
+            system_prompt: Optional system instruction.
+            max_retries: Number of retries on schema validation failure.
+            
+        Returns:
+            An instance of the schema_class.
         """
         pass
 
@@ -45,6 +61,11 @@ class MockReasoningEngine(BaseReasoningEngine):
             "evidence_spans": {}
         }
         """
+
+    def generate_structured(self, prompt: str, schema_class: type, system_prompt: Optional[str] = None, max_retries: int = 3) -> Any:
+        import json
+        dummy_json = self.generate(prompt, system_prompt=system_prompt, json_mode=True)
+        return schema_class.model_validate(json.loads(dummy_json))
 
 class OpenAIEngine(BaseReasoningEngine):
     """
@@ -76,10 +97,17 @@ class OpenAIEngine(BaseReasoningEngine):
              # Don't raise error yet, let the caller handle it if they try to use it without key
              pass
 
-        self.client = OpenAI(
+        raw_client = OpenAI(
             api_key=self.api_key,
             base_url=self.base_url
         )
+        self.client = raw_client
+        
+        try:
+            import instructor
+            self.instructor_client = instructor.from_openai(raw_client, mode=instructor.Mode.JSON)
+        except ImportError:
+            self.instructor_client = None
 
     def generate(self, prompt: str, system_prompt: Optional[str] = None, json_mode: bool = True) -> str:
         messages = []
@@ -100,3 +128,24 @@ class OpenAIEngine(BaseReasoningEngine):
             return response.choices[0].message.content
         except Exception as e:
             raise RuntimeError(f"LLM generation failed: {e}")
+
+    def generate_structured(self, prompt: str, schema_class: type, system_prompt: Optional[str] = None, max_retries: int = 3):
+        if not self.instructor_client:
+            raise ImportError("The 'instructor' package is required for generate_structured. Please install it.")
+            
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append({"role": "user", "content": prompt})
+        
+        try:
+            response = self.instructor_client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                response_model=schema_class,
+                temperature=0.0,
+                max_retries=max_retries
+            )
+            return response
+        except Exception as e:
+            raise RuntimeError(f"Structured LLM generation failed: {e}")

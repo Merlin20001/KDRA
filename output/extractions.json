@@ -1,159 +1,14 @@
 [
   {
-    "paper_id": "2306.05212v1.pdf",
-    "methods": [
-      "Request Rewriting",
-      "Document Retrieval",
-      "Passage Extraction",
-      "Answer Generation",
-      "Fact Checking",
-      "Retrieval-Augmented LLM"
-    ],
-    "datasets": [
-      "external corpus",
-      "knowledge corpus",
-      "external knowledge corpus"
-    ],
-    "metrics": [
-      {
-        "name": "sliding window size",
-        "value": 512.0,
-        "unit": "tokens",
-        "dataset": "external corpus",
-        "confidence": null
-      },
-      {
-        "name": "step",
-        "value": 256.0,
-        "unit": "tokens",
-        "dataset": "external corpus",
-        "confidence": null
-      },
-      {
-        "name": "top-K",
-        "value": 3.0,
-        "unit": "documents",
-        "dataset": "external corpus",
-        "confidence": null
-      }
-    ],
-    "claims": [
-      "RETA-LLM reduces hallucination in LLMs by grounding generation in retrieved external knowledge.",
-      "RETA-LLM enables answering in-domain questions inaccessible to vanilla LLMs trained on public data.",
-      "The disentangled design separates IR systems and LLMs, enabling independent customization of search engines and language models.",
-      "LLMs are used not only for answer generation but also for request rewriting, passage extraction, and fact checking.",
-      "RETA-LLM provides a complete, ready-to-use pipeline for building domain-specific retrieval-augmented LLM systems from scratch.",
-      "RETA-LLM is part of YuLan, an open-source LLM initiative by Gaoling School of Artificial Intelligence, Renmin University of China."
-    ],
-    "limitations": [
-      "RETA-LLM is still under development with unresolved issues.",
-      "Input length constraints of LLMs necessitate heuristic passage extraction (e.g., sliding window), risking information loss.",
-      "Reliance on LLMs for fact checking inherits their inherent unreliability — no external verification oracle is employed.",
-      "Default configuration uses a dense retriever without benchmarking against sparse or hybrid alternatives.",
-      "No evaluation metrics (e.g., accuracy, faithfulness, retrieval recall) are reported in the provided text.",
-      "The toolkit’s effectiveness is not empirically validated in the paper — no experiments, baselines, or ablation studies are presented."
-    ],
-    "concepts": [
-      "Retrieval-Augmented Generation",
-      "Hallucination Mitigation",
-      "Query Reformulation",
-      "Reference-Aware Generation",
-      "Fact Verification",
-      "Modular LLM Pipeline",
-      "External Knowledge Integration",
-      "Disentangled Architecture",
-      "Conversational Dense Retrieval",
-      "Instruction-Tuned LLM Usage"
-    ],
-    "evidence_spans": {}
-  },
-  {
-    "paper_id": "2411.15497v3.pdf",
-    "methods": [
-      "AeroGen",
-      "layout-controllable diffusion generative model",
-      "end-to-end data augmentation framework",
-      "diversity-conditioned generator",
-      "filtering mechanism"
-    ],
-    "datasets": [
-      "DIOR",
-      "DIOR-R",
-      "HRSC",
-      "RSIOD"
-    ],
-    "metrics": [
-      {
-        "name": "mAP",
-        "value": 3.7,
-        "unit": "%",
-        "dataset": "DIOR",
-        "confidence": null
-      },
-      {
-        "name": "mAP",
-        "value": 4.3,
-        "unit": "%",
-        "dataset": "DIOR-R",
-        "confidence": null
-      },
-      {
-        "name": "mAP",
-        "value": 2.43,
-        "unit": "%",
-        "dataset": "HRSC",
-        "confidence": null
-      },
-      {
-        "name": "mAP",
-        "value": 17.8,
-        "unit": "%",
-        "dataset": "GF",
-        "confidence": null
-      },
-      {
-        "name": "mAP",
-        "value": 14.7,
-        "unit": "%",
-        "dataset": "DAM",
-        "confidence": null
-      },
-      {
-        "name": "mAP",
-        "value": 12.6,
-        "unit": "%",
-        "dataset": "APO",
-        "confidence": null
-      }
-    ],
-    "claims": [
-      "AeroGen is the first model to simultaneously support horizontal and rotated bounding box condition generation for remote sensing image object detection.",
-      "The synthetic data produced by AeroGen improve mAP on DIOR, DIOR-R, and HRSC by 3.7%, 4.3%, and 2.43%, respectively.",
-      "Rare object classes (GF, DAM, APO) show mAP improvements of 17.8%, 14.7%, and 12.6%, respectively.",
-      "The proposed end-to-end data augmentation framework synthesizes RSIOD data directly via conditional generative models, eliminating the need for additional instance-pasting procedures.",
-      "The framework integrates a diversity-conditioned generator and a filtering mechanism to enhance both diversity and quality of generated images."
-    ],
-    "limitations": [
-      "Dependence on high-quality labeled layout priors (i.e., horizontal and rotated bounding box annotations) for conditional generation.",
-      "No evaluation of annotation cost reduction, real-world deployment feasibility, or human-in-the-loop validation.",
-      "Limited discussion of generalization to unseen object categories, cross-sensor modalities (e.g., SAR), or domain shifts beyond optical remote sensing.",
-      "Computational cost, inference latency, or memory footprint of AeroGen is not reported or benchmarked against alternatives (e.g., GANs or autoregressive models)."
-    ],
-    "concepts": [
-      "remote sensing image object detection",
-      "diffusion-based image generation",
-      "layout conditioning",
-      "rotated bounding boxes",
-      "synthetic data augmentation",
-      "conditional image generation",
-      "data scarcity mitigation",
-      "quality-diversity tradeoff",
-      "end-to-end augmentation"
-    ],
-    "evidence_spans": {}
-  },
-  {
     "paper_id": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
+    "metadata": {
+      "paper_id": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
+      "title": "Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf",
+      "year": 2026,
+      "venue": "Unknown",
+      "authors": [],
+      "url": "file:///Users/artemis/Desktop/projects/5050/KDRA/data/Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf"
+    },
     "methods": [
       "Prompt-based generation",
       "Retrieval-augmented generation",
@@ -167,7 +22,7 @@
     ],
     "metrics": [
       {
-        "name": "Performance improvement",
+        "name": "Performance Improvement",
         "value": "3-26",
         "unit": "%",
         "dataset": "Low-data regimes",
@@ -175,17 +30,16 @@
       }
     ],
     "claims": [
-      "LLMs can significantly augment or substitute real-world datasets",
-      "Synthetic data boosts model performance in low-resource settings",
-      "Reduces annotation costs and enables data augmentation",
-      "Improvements of 3-26% observed with synthetic augmentation"
+      "LLMs can significantly augment or even substitute for real-world datasets",
+      "Synthetic data generated by LLMs has shown promise in boosting model performance in low-resource settings",
+      "Reduces annotation costs",
+      "Enables data augmentation for improved robustness"
     ],
     "limitations": [
       "Factual inaccuracies in generated text",
       "Insufficient stylistic or distributional realism",
       "Risks of bias amplification",
-      "Model collapse from iterative self-training",
-      "Ensuring data fidelity and factuality"
+      "Model collapse from iterative self-training"
     ],
     "concepts": [
       "Synthetic data generation",
@@ -193,9 +47,102 @@
       "Text data augmentation",
       "Code data synthesis",
       "Instruction tuning",
-      "Model collapse",
       "Bias amplification",
-      "Natural language processing"
+      "Model collapse",
+      "Data fidelity"
+    ],
+    "evidence_spans": {}
+  },
+  {
+    "paper_id": "2411.15497v3.pdf",
+    "metadata": {
+      "paper_id": "2411.15497v3.pdf",
+      "title": "AeroGen: Enhancing Remote Sensing Object Detection with Diffusion-Driven Data Generation",
+      "year": 2024,
+      "venue": "arXiv",
+      "authors": [
+        "Datao Tang",
+        "Xiangyong Cao",
+        "Xuan Wu",
+        "Jialin Li",
+        "Jing Yao",
+        "Xueru Bai",
+        "Dongsheng Jiang",
+        "Yin Li",
+        "Deyu Meng"
+      ],
+      "url": "https://arxiv.org/pdf/2411.15497v3"
+    },
+    "methods": [
+      "AeroGen",
+      "end-to-end data augmentation framework",
+      "diversity-conditioned generator",
+      "filtering mechanism"
+    ],
+    "datasets": [
+      "DIOR",
+      "DIOR-R",
+      "HRSC"
+    ],
+    "metrics": [
+      {
+        "name": "mAP improvement",
+        "value": 3.7,
+        "unit": "%",
+        "dataset": "DIOR",
+        "confidence": null
+      },
+      {
+        "name": "mAP improvement",
+        "value": 4.3,
+        "unit": "%",
+        "dataset": "DIOR-R",
+        "confidence": null
+      },
+      {
+        "name": "mAP improvement",
+        "value": 2.43,
+        "unit": "%",
+        "dataset": "HRSC",
+        "confidence": null
+      },
+      {
+        "name": "Rare class mAP improvement (GF)",
+        "value": 17.8,
+        "unit": "%",
+        "dataset": "DIOR",
+        "confidence": null
+      },
+      {
+        "name": "Rare class mAP improvement (DAM)",
+        "value": 14.7,
+        "unit": "%",
+        "dataset": "DIOR-R",
+        "confidence": null
+      },
+      {
+        "name": "Rare class mAP improvement (APO)",
+        "value": 12.6,
+        "unit": "%",
+        "dataset": "HRSC",
+        "confidence": null
+      }
+    ],
+    "claims": [
+      "AeroGen is the first model to simultaneously support horizontal and rotated bounding box condition generation.",
+      "Synthetic RSIOD data can significantly improve the detection performance of existing RSIOD models.",
+      "The proposed pipeline eliminates the need for additional instance-pasting procedures."
+    ],
+    "limitations": [],
+    "concepts": [
+      "Remote Sensing Object Detection",
+      "Diffusion Models",
+      "Data Augmentation",
+      "Layout Control",
+      "Synthetic Data",
+      "Bounding Box Conditions",
+      "Diversity",
+      "Quality"
     ],
     "evidence_spans": {}
   }

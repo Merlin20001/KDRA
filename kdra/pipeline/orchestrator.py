@@ -1,7 +1,11 @@
 import os
-from typing import List, Dict, Optional, Any
+import json
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+from typing import List, Dict, Optional, Any, Tuple
 from kdra.core.schemas import PaperMetadata, PaperExtraction, KnowledgeGraph, ComparativeInsight
 from kdra.core.ingestion import PaperIngestor
+from kdra.core.ingestion.metadata import MetadataExtractor
 from kdra.core.reasoning import (
     PaperExtractor, 
     ComparativeAnalyst, 
@@ -74,13 +78,49 @@ class KDRAPipeline:
         self.graph_builder = GraphBuilder()
         self.graph_storage = GraphStorage()
 
+    async def _process_single_paper(self, path: str) -> Tuple[str, Optional[PaperExtraction], Optional[Any], Optional[List], Optional[str]]:
+        """
+        Process a single paper pipeline to be run concurrently.
+        Returns: (paper_id, extraction, subgraph, chunks, error_msg)
+        """
+        paper_id = os.path.basename(path)
+        try:
+            print(f"Processing new paper: {path} (async)")
+            
+            # Using ThreadPoolExecutor because the underlying calls are deeply synchronous
+            # (In a real setting, using native async DB connections / LLM calls is better)
+            def _sync_worker():
+                # Ingest
+                metadata = MetadataExtractor.extract(path)
+                metadata.paper_id = paper_id
+                chunks = self.ingestor.ingest_file(path, metadata)
+                
+                # Extract
+                extraction = self.extractor.extract(metadata.paper_id, chunks)
+                extraction.metadata = metadata
+                
+                # Build Subgraph
+                subgraph = self.graph_builder.build_subgraph(extraction)
+                
+                return extraction, subgraph, chunks
+                
+            loop = asyncio.get_event_loop()
+            extraction, subgraph, chunks = await loop.run_in_executor(None, _sync_worker)
+            
+            return paper_id, extraction, subgraph, chunks, None
+        except Exception as e:
+            error_msg = f"Error processing {paper_id}: {str(e)}"
+            print(error_msg)
+            return paper_id, None, None, None, error_msg
+
     def process_papers(self, file_paths: List[str]) -> Dict[str, Any]:
         """
         Ingest and extract information from papers to build the Knowledge Graph.
         Does NOT perform comparative analysis (no topic required).
         Supports incremental updates.
+        Now uses asyncio to concurrently process multiple papers.
         """
-        print(f"Processing {len(file_paths)} papers (Incremental Mode)...")
+        print(f"Processing {len(file_paths)} papers (Incremental & Async Mode)...")
         import json
         
         existing_extractions = []
@@ -115,37 +155,39 @@ class KDRAPipeline:
 
         new_papers_processed = 0
 
-        for path in file_paths:
-            paper_id = os.path.basename(path)
-            if paper_id in existing_paper_ids:
-                print(f"Skipping already processed paper: {paper_id}")
-                continue
+        async def _run_batch():
+            tasks = []
+            for path in file_paths:
+                paper_id = os.path.basename(path)
+                if paper_id in existing_paper_ids:
+                    print(f"Skipping already processed paper: {paper_id}")
+                    continue
+                tasks.append(self._process_single_paper(path))
 
-            try:
-                print(f"Processing new paper: {path}")
-                # Ingest
-                metadata = PaperMetadata(
-                    paper_id=paper_id,
-                    title=paper_id,
-                    url=f"file://{os.path.abspath(path)}"
-                )
-                chunks = self.ingestor.ingest_file(path, metadata)
-                all_chunks.extend(chunks)
+            if not tasks:
+                return []
                 
-                # Extract
-                extraction = self.extractor.extract(metadata.paper_id, chunks)
-                all_extractions.append(extraction)
-                
-                # Build Subgraph
-                subgraph = self.graph_builder.build_subgraph(extraction)
-                subgraphs.append(subgraph)
-                new_papers_processed += 1
-                
-            except Exception as e:
-                error_msg = f"Error processing {paper_id}: {str(e)}"
-                print(error_msg)
+            return await asyncio.gather(*tasks)
+
+        # Execute async processing
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
+        results = loop.run_until_complete(_run_batch())
+        
+        for paper_id, extraction, subgraph, chunks, error_msg in results:
+            if error_msg:
                 errors.append(error_msg)
                 continue
+                
+            if extraction:
+                all_extractions.append(extraction)
+                subgraphs.append(subgraph)
+                all_chunks.extend(chunks)
+                new_papers_processed += 1
 
         if not all_extractions:
             print("No papers available in the project.")
@@ -233,26 +275,33 @@ class KDRAPipeline:
         
         new_papers_processed = 0
         
+        # Prepare Metadata Extractor
+        from kdra.core.ingestion.metadata import MetadataExtractor
+        
         # 1. Ingestion & Extraction Loop (Only for new papers)
         for path in file_paths:
-            paper_id = os.path.basename(path)
-            if paper_id in existing_paper_ids:
-                print(f"Skipping already processed paper: {paper_id}")
+            # We first generate a stable paper_id which is the filename
+            file_basename = os.path.basename(path)
+            
+            if file_basename in existing_paper_ids:
+                print(f"Skipping already processed paper: {file_basename}")
                 continue
                 
             print(f"Processing new paper: {path}")
             try:
+                # 1.a Automatically extract real Academic Metadata
+                metadata = MetadataExtractor.extract(path)
+                
+                # We enforce using the original filename as the core Paper ID to maintain consistency
+                # with Streamlit's selection logic, but the Extractor will enrich the graph nodes.
+                metadata.paper_id = file_basename 
+
                 # Ingest
-                # TODO: Extract real metadata from file
-                metadata = PaperMetadata(
-                    paper_id=paper_id,
-                    title=paper_id,
-                    url=f"file://{os.path.abspath(path)}"
-                )
                 chunks = self.ingestor.ingest_file(path, metadata)
                 
                 # Extract
                 extraction = self.extractor.extract(metadata.paper_id, chunks)
+                extraction.metadata = metadata
                 all_extractions.append(extraction)
                 
                 # Build Subgraph

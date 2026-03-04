@@ -1,0 +1,107 @@
+Running KDRA Demo (Topic: 'LLM Agents', Mode: dummy)...
+2026-03-04 17:18:31,074 [WARNING] surya: `TableRecEncoderDecoderModel` is not compatible with mps backend. Defaulting to cpu instead
+Found 7 files in /Users/artemis/Desktop/projects/5050/KDRA/data:
+ - 2311.17453v1.pdf
+ - 2410.00193v3.pdf
+ - attention.txt
+ - 2306.05212v1.pdf
+ - 2411.15497v3.pdf
+ - Synthetic_Data_Generation_Using_Large_Language_Models_Advances_in_Text_and_Code.pdf
+ - 2005.07866v1.pdf
+Initializing KDRA with Dummy Components (Offline Mode)
+Starting KDRA Pipeline for topic: 'LLM Agents'
+Loading existing extractions for incremental updates...
+Loaded 2 existing extractions.
+Loaded existing knowledge graph with 37 nodes and 127 edges.
+Processing new paper: /Users/artemis/Desktop/projects/5050/KDRA/data/2311.17453v1.pdf
+[2311.17453v1.pdf] Found arXiv ID: 2311.17453v1. Fetching metadata...
+[2311.17453v1.pdf] Successfully resolved metadata: 'Privacy Measurement in Tabular Synthetic Data: Sta...' by Alexander Boudewijn, Andrea Filippo Ferraris
+Exception ignored in: <function ResourceTracker.__del__ at 0x134de9f80>
+Traceback (most recent call last):
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 80, in __del__
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 89, in _stop
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 102, in _stop_locked
+AttributeError: '_thread.RLock' object has no attribute '_recursion_count'
+Exception ignored in: <function ResourceTracker.__del__ at 0x14c7c6200>
+Traceback (most recent call last):
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 80, in __del__
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 89, in _stop
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 102, in _stop_locked
+AttributeError: '_thread.RLock' object has no attribute '_recursion_count'
+Recognizing Layout:   0%|          | 0/20 [00:00<?, ?it/s]Recognizing Layout:   5%|▌         | 1/20 [00:35<11:07, 35.15s/it]Recognizing Layout:  10%|█         | 2/20 [00:35<04:22, 14.56s/it]Recognizing Layout:  25%|██▌       | 5/20 [00:58<02:23,  9.58s/it]Recognizing Layout:  30%|███       | 6/20 [00:59<01:43,  7.40s/it]Recognizing Layout:  35%|███▌      | 7/20 [01:11<01:52,  8.69s/it]Recognizing Layout:  40%|████      | 8/20 [01:12<01:18,  6.56s/it]Recognizing Layout:  50%|█████     | 10/20 [01:28<01:13,  7.30s/it]Recognizing Layout:  55%|█████▌    | 11/20 [01:29<00:51,  5.76s/it]Recognizing Layout:  60%|██████    | 12/20 [01:40<00:56,  7.10s/it]Recognizing Layout:  65%|██████▌   | 13/20 [01:40<00:36,  5.24s/it]Traceback (most recent call last):
+  File "/Users/artemis/Desktop/projects/5050/KDRA/kdra/scripts/demo.py", line 30, in <module>
+    main()
+  File "/Users/artemis/Desktop/projects/5050/KDRA/kdra/scripts/demo.py", line 22, in main
+    results = run_topic(topic=args.topic, top_k=args.top_k, mode=args.mode)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/Desktop/projects/5050/KDRA/kdra/pipeline/run_topic.py", line 49, in run_topic
+    results = pipeline.run_topic(topic, files)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/Desktop/projects/5050/KDRA/kdra/pipeline/orchestrator.py", line 300, in run_topic
+    chunks = self.ingestor.ingest_file(path, metadata)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/Desktop/projects/5050/KDRA/kdra/core/ingestion/loader.py", line 132, in ingest_file
+    text = self._parse_pdf(file_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/Desktop/projects/5050/KDRA/kdra/core/ingestion/loader.py", line 72, in _parse_pdf
+    rendered = converter(file_path)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/marker/converters/pdf.py", line 195, in __call__
+    document = self.build_document(temp_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/marker/converters/pdf.py", line 182, in build_document
+    document = DocumentBuilder(self.config)(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/marker/builders/document.py", line 33, in __call__
+    layout_builder(document, provider)
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/marker/builders/layout.py", line 56, in __call__
+    layout_results = self.surya_layout(document.pages)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/marker/builders/layout.py", line 88, in surya_layout
+    layout_results = self.layout_model(
+                     ^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/surya/layout/__init__.py", line 51, in __call__
+    self.foundation_predictor.prediction_loop(
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/surya/foundation/__init__.py", line 780, in prediction_loop
+    updated_inputs, outputs, merge_idxs = self.prefill(
+                                          ^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/surya/foundation/__init__.py", line 556, in prefill
+    image_embeddings = self.model.get_image_embeddings(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/surya/common/surya/__init__.py", line 258, in get_image_embeddings
+    chunk_embeddings = self.vision_encoder.embed_images(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/surya/common/surya/encoder/__init__.py", line 798, in embed_images
+    return super().forward(
+           ^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/surya/common/surya/encoder/__init__.py", line 765, in forward
+    hidden_states = blk(
+                    ^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/surya/common/surya/encoder/__init__.py", line 595, in forward
+    hidden_states = hidden_states + self.attn(
+                                    ^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/surya/common/surya/encoder/__init__.py", line 544, in forward
+    self.unpack_qkv_with_mask(q, k, v, cu_seqlens)
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/surya/common/surya/encoder/__init__.py", line 438, in unpack_qkv_with_mask
+    max_seq_len = seq_lengths.max().item()  # Use .max() on tensor
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Recognizing Layout:  65%|██████▌   | 13/20 [01:44<00:56,  8.00s/it]
+Exception ignored in: <function ResourceTracker.__del__ at 0x142ec6660>
+Traceback (most recent call last):
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 80, in __del__
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 89, in _stop
+  File "/Users/artemis/miniconda3/envs/kdra/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 102, in _stop_locked
+AttributeError: '_thread.RLock' object has no attribute '_recursion_count'
